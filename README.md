@@ -21,9 +21,6 @@ O sistema permite que usuários:
   - 📘 Documentação: Swagger (OpenAPI)
   - ⚙️ CI/CD: GitHub Actions
 
-## 🧱 Arquitetura
-Link: https://ibb.co/jk0d02Ff
-
 ## 🧱 Arquitetura Backend (Spring Boot)
 
 O projeto usa o padrão MVC + Camadas de Serviço.
