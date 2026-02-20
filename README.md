@@ -50,4 +50,4 @@ Regras:
   - Valida saldo antes da aposta
   - Registra histórico
 
-#### Este projeto é destinado exclusivamente para fins acadêmicos e educacionais.
+### ⚠️ Este projeto é destinado exclusivamente para fins acadêmicos e educacionais.
