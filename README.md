@@ -19,6 +19,12 @@ O projeto segue arquitetura Full Stack com API REST, dividida em:
   - 🎨 Frontend: Angular
   - 🗄 Banco de Dados: MySQL
 
+**🧱 Arquitetura Backend (Spring Boot)**
+
+O projeto usa o padrão MVC + Camadas de Serviço.
+
+  - Controller → Service → Security → Repository → Database
+
 **📦 Funcionalidades**
   - Autenticação
   - Cadastro e exclusão de usuário
