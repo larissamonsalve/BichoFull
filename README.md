@@ -12,9 +12,7 @@ O sistema permite que usuários:
   - Acompanhem resultados
   - Consultem histórico de ganhos e perdas
 
-## 🏗 Arquitetura do Sistema
-
-O projeto segue arquitetura Full Stack com API REST, dividida em:
+## 🏗 Tecnologias
 
   - 🔙 Backend: Spring Boot
   - 🎨 Frontend: Angular
