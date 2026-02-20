@@ -1,4 +1,4 @@
-# BichoFull-Jogo-do-Bicho
+# BichoFull
 
 **📌 Sobre o Projeto**
 
