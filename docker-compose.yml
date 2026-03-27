@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysql-jogo-bicho
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: db_bichofull
+      MYSQL_USER: monsalve
+      MYSQL_PASSWORD: 9202
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    # Opcional: Garante que o MySQL esteja pronto para conexões
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  app:
+    build: .
+    container_name: spring-bichofull
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy # Só sobe o Java quando o MySQL estiver 100% pronto
+    environment:
+      # Note que usamos 'db' no lugar de 'localhost' porque estao na mesma rede Docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/db_bichofull?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_USERNAME: monsalve
+      SPRING_DATASOURCE_PASSWORD: 9202
+      # Força o Flyway a rodar antes de qualquer coisa
+      SPRING_FLYWAY_BASELINE_ON_MIGRATE: "true"
+
+volumes:
+  mysql_data:
