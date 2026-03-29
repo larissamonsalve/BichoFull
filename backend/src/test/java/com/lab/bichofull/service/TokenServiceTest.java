@@ -20,7 +20,7 @@ class TokenServiceTest {
         
         // 2. Usamos o Reflection para colocar a chave no campo privado 'jwtSecret'
         // O nome "jwtSecret" deve ser IGUAL ao nome da variável lá no TokenService.java
-        ReflectionTestUtils.setField(tokenService, "jwtSecret", "BichoFullSecretKeyMuitoSeguraParaGerarOJWT2026!");
+        ReflectionTestUtils.setField(tokenService, "jwtSecret", "BichoFullSecretKeyMuitoSeguraComMaisDe32Caracteres2026!");
     }
 
     @Test
