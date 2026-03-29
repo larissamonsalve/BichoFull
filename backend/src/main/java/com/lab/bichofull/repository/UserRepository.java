@@ -5,9 +5,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    // Busca para o login do Apostador [cite: 3]
-    Optional<User> findByEmail(String email);
-    
-    // Busca para o login do Administrador [cite: 5]
+    boolean existsByEmail(String email);
+    boolean existsByUsername(String username);
     Optional<User> findByUsername(String username);
+
+    Optional<User> findByUsernameOrEmail(String username, String email);
 }

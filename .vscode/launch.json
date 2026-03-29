@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-BichofullApplication<bichofull>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.lab.bichofull.BichofullApplication",
+            "projectName": "bichofull",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

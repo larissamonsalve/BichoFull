@@ -10,6 +10,7 @@ CREATE TABLE bets (
     bet_mode ENUM('SIMPLE', 'SURROUNDED') NOT NULL,
     
     bet_value VARCHAR(4) NOT NULL,        -- O número ou grupo escolhido [cite: 127]
+    animal_name VARCHAR(20),        -- Nome do animal (ex: Cobra) para o histórico
     wager_amount DECIMAL(10, 2) NOT NULL, -- Valor apostado (mínimo R$ 0,01) [cite: 115]
     
     -- Resultado do prêmio: Calculado pelo sistema após o sorteio [cite: 10, 111, 118]

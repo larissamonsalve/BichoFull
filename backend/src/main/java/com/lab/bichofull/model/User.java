@@ -1,24 +1,24 @@
 package com.lab.bichofull.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.DecimalMin;
+import lombok.*;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
+@Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class User {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     private String name;
 
-    @Column(unique = true)
+    @Column(unique = true, length = 50)
     private String username;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, length = 100)
     private String email;
 
     @Column(nullable = false)
@@ -28,27 +28,9 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
-    @DecimalMin(value = "0.00")
-    @Column(precision = 10, scale = 2)
-    private BigDecimal balance = new BigDecimal("1000.00");
+    @Column(nullable = false)
+    private BigDecimal balance;
 
-    public enum Role {
-        PLAYER, ADMIN
-    }
-
-    // Getters e Setters manuais (para evitar erros de compilação com Lombok)
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
-    public Role getRole() { return role; }
-    public void setRole(Role role) { this.role = role; }
-    public BigDecimal getBalance() { return balance; }
-    public void setBalance(BigDecimal balance) { this.balance = balance; }
+    @Column(name = "created_at", insertable = false, updatable = false)
+    private LocalDateTime createdAt;
 }
