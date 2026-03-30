@@ -1,44 +1,54 @@
-<div class="register-container">
-  <h2>Criar Conta</h2>
+<div class="arcade-page-wrapper">
+  <header class="arcade-header-register">
+    <a routerLink="/" class="arcade-logo-link">
+      <h1 class="arcade-logo">BichoFull</h1>
+    </a>
+    <p class="arcade-subtitle">Sistema de Simulação do Jogo do Bicho</p>
+  </header>
 
-  @if (successMessage) {
-    <div class="alert success">{{ successMessage }}</div>
-  }
-  @if (errorMessage) {
-    <div class="alert error">{{ errorMessage }}</div>
-  }
+  <div class="section-container register-card">
+    <h2 class="arcade-title">Criar Conta</h2>
+    <p class="register-instruction">Crie sua conta e ganhe R$ 1.000 de saldo inicial</p>
 
-  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-    <div class="form-group">
-      <label for="name">Nome Completo</label>
-      <input id="name" type="text" formControlName="name" placeholder="Digite seu nome" />
-    </div>
+    @if (successMessage) {
+      <div class="alert-arcade success">{{ successMessage }}</div>
+    }
+    @if (errorMessage) {
+      <div class="alert-arcade error">{{ errorMessage }}</div>
+    }
 
-    <div class="form-group">
-      <label for="username">Nome de Usuário</label>
-      <input
-        id="username"
-        type="text"
-        formControlName="username"
-        placeholder="Escolha um apelido"
-      />
-    </div>
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="arcade-form">
+      <div class="form-group">
+        <label for="name">Nome Completo</label>
+        <input id="name" type="text" formControlName="name" placeholder="Seu nome" class="arcade-input" />
+      </div>
 
-    <div class="form-group">
-      <label for="email">E-mail</label>
-      <input id="email" type="email" formControlName="email" placeholder="seu@email.com" />
-    </div>
+      <div class="form-group">
+        <label for="username">Nome de Usuário</label>
+        <input id="username" type="text" formControlName="username" placeholder="Escolha um apelido" class="arcade-input" />
+      </div>
 
-    <div class="form-group">
-      <label for="password">Senha</label>
-      <input
-        id="password"
-        type="password"
-        formControlName="password"
-        placeholder="Mínimo 6 caracteres"
-      />
-    </div>
+      <div class="form-group">
+        <label for="email">E-mail</label>
+        <input id="email" type="email" formControlName="email" placeholder="llll@gmail.com" class="arcade-input" />
+      </div>
 
-    <button type="submit" [disabled]="registerForm.invalid">Cadastrar</button>
-  </form>
+      <div class="form-group">
+        <label for="password">Senha</label>
+        <input id="password" type="password" formControlName="password" placeholder="••••" class="arcade-input" />
+      </div>
+
+      <button type="submit" [disabled]="registerForm.invalid" class="btn-arcade btn-main-action btn-full">
+        Criar Conta
+      </button>
+    </form>
+
+    <p class="footer-link">
+      Já tem uma conta? <a routerLink="/login" class="neon-link">Entrar</a>
+    </p>
+  </div>
+
+  <p class="disclaimer">
+    Este sistema é apenas para fins educacionais. Não envolve dinheiro real.
+  </p>
 </div>

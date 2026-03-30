@@ -1,13 +1,13 @@
 import { Component, inject } from '@angular/core';
-// Necessário para *ngIf
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router'; // 1. Importar o Router
+import { Router, RouterLink } from '@angular/router'; // Importado RouterLink
+import { CommonModule } from '@angular/common'; // Importado CommonModule
 
 @Component({
   selector: 'app-register',
-  standalone: true, // <--- Adicione isso
-  imports: [ReactiveFormsModule], // <--- Adicione isso
+  standalone: true,
+  imports: [ReactiveFormsModule, RouterLink, CommonModule], // Adicionados aqui
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css'],
 })
@@ -33,17 +33,15 @@ export class RegisterComponent {
     if (this.registerForm.valid) {
       this.authService.register(this.registerForm.value).subscribe({
         next: () => {
-          this.successMessage = 'Cadastro realizado com sucesso! Redirecionando para o login...';
+          this.successMessage = 'Cadastro realizado! Redirecionando...';
           this.errorMessage = '';
           this.registerForm.reset();
-
-          // 4. Aguardar 2 segundos (2000 ms) e redirecionar para a tela de login
           setTimeout(() => {
             this.router.navigate(['/login']);
           }, 2000);
         },
         error: (err) => {
-          this.errorMessage = err.error || 'Erro ao realizar cadastro. Tente novamente.';
+          this.errorMessage = typeof err.error === 'string' ? err.error : 'Erro ao realizar cadastro.';
           this.successMessage = '';
         },
       });

@@ -1,10 +1,8 @@
 package com.lab.bichofull.config;
 
-// 1. ADICIONE ESTES IMPORTS QUE FALTAVAM:
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-// ----------------------------------------
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +21,6 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    // 2. INJETE O FILTRO AQUI (Isso resolve o erro "cannot find symbol variable securityFilter")
     @Autowired
     private SecurityFilter securityFilter;
 
@@ -36,13 +33,13 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
-            .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Adicionei isso para ativar seu Bean de CORS
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/animals/**").permitAll()
                 .anyRequest().authenticated()
             )
-            // Agora o Java vai reconhecer o securityFilter e o UsernamePasswordAuthenticationFilter
             .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
             
         return http.build();

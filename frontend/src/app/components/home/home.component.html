@@ -1,0 +1,115 @@
+<header class="header">
+  <div class="container">
+    <a routerLink="/" class="logo">BichoFull</a>
+    <nav class="nav-links">
+      <a routerLink="/login" class="btn-arcade btn-already-have" style="padding: 10px 20px; font-size: 0.9rem;">Entrar</a>
+      <a routerLink="/register" class="btn-arcade btn-main-action" style="padding: 10px 20px; font-size: 0.9rem;">Criar Conta</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="section-container hero">
+    <h1>Jogo do <br> <span>Bicho</span></h1>
+    <p>Aprenda como funciona a mecânica do tradicional Jogo do Bicho brasileiro com saldo virtual. Sem dinheiro real envolvido.</p>
+    
+    <div class="hero-actions">
+      <a routerLink="/register" class="btn-arcade btn-main-action btn-blink">
+        Comece agora - Grátis
+      </a>
+      
+      <a routerLink="/login" class="btn-arcade btn-already-have">
+        Já tenho conta
+      </a>
+    </div>
+    
+    <small style="display: block; margin-top: 25px; color: var(--azul-claro);">
+      > Bônus Inicial: R$ 1.000 em Fichas Virtuais
+    </small>
+  </section>
+
+  <section class="section-container">
+    <h2 class="section-title">25 Animais, 100 Dezenas</h2>
+    <div class="animal-grid">
+      @for (animal of animals(); track animal.groupNumber) {
+        <div class="card-item">
+          <img 
+            [src]="'assets/bichos/' + animal.imagePath" 
+            [alt]="animal.name" 
+            onerror="this.onerror=null; this.src='https://via.placeholder.com/60x60/151726/6366f1?text=BIXO'">
+          <span class="animal-name">{{ animal.name }}</span>
+          <div class="tens-list">
+            @for (ten of animal.tens; track ten) {
+              <span class="ten-badge">{{ ten }}</span>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+
+  <section class="section-container">
+    <h2 class="section-title">Como jogar</h2>
+    <div class="grid-layout">
+      <div class="card-item">
+        <div class="feature-icon">🪙</div>
+        <h3>Fichas Virtuais</h3>
+        <p>Apostas feitas apenas com moedas fictícias.</p>
+      </div>
+      <div class="card-item">
+        <div class="feature-icon">🕹️</div>
+        <h3>Sua Jogada</h3>
+        <p>Aposte em grupos, dezenas ou milhares.</p>
+      </div>
+      <div class="card-item">
+        <div class="feature-icon">🎲</div>
+        <h3>Sorteio</h3>
+        <p>Motor RNG garante resultados aleatórios.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-container">
+    <h2 class="section-title">Tabela de Prêmios
+    </h2>
+    <div class="grid-layout">
+      <div class="card-item">
+        <h3>Grupo</h3>
+        <div class="multiplier">18x</div>
+        <p>Acerte o Animal</p>
+      </div>
+      <div class="card-item">
+        <h3>Dezena</h3>
+        <div class="multiplier">60x</div>
+        <p>Acerte os 2 últimos dígitos</p>
+      </div>
+      <div class="card-item">
+        <h3>Milhar</h3>
+        <div class="multiplier">4000x</div>
+        <p>Acerte o número completo</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-container final-call">
+    <div class="final-content">
+      <h2 class="arcade-title">Pronto para começar?</h2>
+      
+      <p class="final-text">
+        Crie sua conta gratuita e ganhe R$ 1.000 <br>
+        em saldo virtual para aprender.
+      </p>
+      
+      <div class="final-actions">
+        <a routerLink="/register" class="btn-arcade btn-main-action btn-blink-final">
+          Criar Conta Gratuita
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <p> Simulador Educacional - Não envolve dinheiro real</p>
+  <p>BichoFull - Fins Educacionais</p>
+</footer>
