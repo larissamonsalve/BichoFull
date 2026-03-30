@@ -33,4 +33,20 @@ public class User {
 
     @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    // PREVENÇÃO DE CORRIDA: O Hibernate usa essa versão para impedir que
+    // duas transações modifiquem o saldo exatamente no mesmo milissegundo.
+    @Version
+    private Long version; 
+
+    // DOMÍNIO RICO: A lógica financeira fica protegida dentro da própria entidade
+    public void debitBalance(BigDecimal amount) {
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("O valor da aposta deve ser maior que zero.");
+        }
+        if (this.balance.compareTo(amount) < 0) {
+            throw new IllegalArgumentException("Saldo insuficiente.");
+        }
+        this.balance = this.balance.subtract(amount);
+    }
 }
