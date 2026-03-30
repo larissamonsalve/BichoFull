@@ -1,14 +1,13 @@
 import { Component, inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule} from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
-
-import { ReactiveFormsModule } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, RouterLink, CommonModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
@@ -31,11 +30,10 @@ export class LoginComponent {
     if (this.loginForm.valid) {
       this.authService.login(this.loginForm.value).subscribe({
         next: () => {
-          // Redireciona para a página de apostas ou dashboard após sucesso
           this.router.navigate(['/dashboard']);
         },
         error: (err) => {
-          this.errorMessage = err.error || 'Usuário ou senha inválidos.';
+          this.errorMessage = typeof err.error === 'string' ? err.error : 'Usuário ou senha inválidos.';
         },
       });
     }
