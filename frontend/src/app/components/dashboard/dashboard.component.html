@@ -1,53 +1,40 @@
 <div class="dashboard-wrapper">
-  
-  <header class="arcade-header-nav">
+  <header class="arcade-header-nav" role="banner">
     <div class="nav-container">
       <a routerLink="/" class="arcade-logo arcade-font">BichoFull</a>
 
-      <button class="hamburger-btn" (click)="toggleMenu()" [class.active]="isMenuOpen()">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-      
-      <nav class="nav-links" [class.open]="isMenuOpen()">
-        <a routerLink="/dashboard" class="nav-link active" (click)="closeMenu()">Apostar</a>
-        <a routerLink="/history" class="nav-link" (click)="closeMenu()">Histórico</a>
+      <nav class="nav-links-desktop" role="navigation">
+        <a routerLink="/dashboard" class="nav-link active">Apostar</a>
+        <a routerLink="/history" class="nav-link">Histórico</a>
       </nav>
 
       <div class="nav-user-info">
         <div class="nav-balance text-neon-green">
-          <span class="icon">💼</span> R$ {{ wallet().balance | number:'1.2-2' }}
+          <span class="icon" aria-hidden="true">💼</span> R$ {{ wallet().balance | number:'1.2-2' }}
         </div>
-        <span class="welcome-text">Olá, <strong>{{ userName() }}</strong></span>
-        <button (click)="logout()" class="btn-logout" title="Sair">
-          <span class="icon">➡️</span>
+        <span class="welcome-text">
+          Olá, <strong class="user-name-highlight">{{ userName() }}</strong>
+        </span>
+        <button (click)="logout()" class="btn-logout" title="Sair" type="button">
+          <span class="icon" aria-hidden="true">➡️</span>
         </button>
       </div>
     </div>
   </header>
 
   <main class="main-layout container">
-    
     <section class="animals-section section-container">
       <div class="section-header">
         <h2 class="arcade-font text-neon-indigo">Escolha um Animal</h2>
-        <p>Clique em um bicho para apostar no grupo</p>
+        <p class="section-subtitle">Clique em um bicho para apostar no grupo</p>
       </div>
 
-      <div class="animal-grid">
+      <div class="animal-grid" role="list">
         @for (animal of animals(); track animal.groupNumber) {
-          <div class="animal-card-dark" (click)="selectAnimal(animal)">
+          <div class="animal-card-dark" role="button" (click)="selectAnimal(animal)" (keydown.enter)="selectAnimal(animal)" tabindex="0">
             <span class="animal-group-badge arcade-font">{{ animal.groupNumber | number:'2.0' }}</span>
-            
-            <img 
-              [src]="'assets/bichos/' + animal.imagePath" 
-              [alt]="animal.name" 
-              class="animal-icon"
-              onerror="this.src='https://via.placeholder.com/60?text=?'">
-            
+            <img [src]="'assets/bichos/' + animal.imagePath" [alt]="animal.name" class="animal-icon">
             <span class="animal-name-dark arcade-font">{{ animal.name }}</span>
-            
             <div class="animal-tens-dark">
               @for (ten of animal.tens; track ten) {
                 <span class="ten-badge-indigo">{{ ten }}</span>
@@ -59,47 +46,59 @@
     </section>
 
     <aside class="sidebar-right">
-      
-      <div class="balance-card section-container">
-        <div class="wallet-header">
-           <span class="icon">💳</span> <span class="arcade-font" style="font-size: 0.8rem;">Sua Carteira</span>
-        </div>
-        
-        <div class="balance-display">
-           <p>Saldo Atual</p>
-           <h2 class="balance-amount text-neon-green">R$ {{ wallet().balance | number:'1.2-2' }}</h2>
-           
-           <p class="net-profit" [class.negative]="wallet().netProfit < 0" [class.positive]="wallet().netProfit >= 0">
-              <span class="trend-icon">{{ wallet().netProfit >= 0 ? '📈' : '📉' }}</span>
-              {{ wallet().netProfit >= 0 ? '+' : '' }}R$ {{ wallet().netProfit | number:'1.2-2' }}
-           </p>
+      <section class="balance-card section-container" aria-labelledby="wallet-title">
+        <div class="wallet-main-display">
+          <div class="wallet-header-row">
+            <span class="icon-pulse" aria-hidden="true">💼</span>
+            <h3 id="wallet-title" class="arcade-font">Sua Carteira</h3>
+          </div>
+                    
+          <h2 class="balance-amount">
+            <small>R$</small>{{ wallet().balance | number:'1.2-2' }}
+          </h2>
+
+          <div class="profit-badge-mini" [class.negative]="wallet().netProfit < 0" [class.positive]="wallet().netProfit >= 0">
+            <span aria-hidden="true">{{ wallet().netProfit >= 0 ? '📈' : '📉' }}</span>
+            R$ {{ wallet().netProfit | number:'1.2-2' }}
+          </div>
         </div>
 
-        <div class="stats-grid">
-           <div class="stat-box">
+        <div class="stats-footer-row">
+          <div class="stat-col">
+            <div class="stat-icon-label">
+              <span class="mini-icon">🏆</span>
               <span class="stat-label">Ganhos</span>
-              <span class="stat-value text-neon-green">R$ {{ wallet().totalWon | number:'1.2-2' }}</span>
-           </div>
-           <div class="stat-box">
+            </div>
+            <span class="stat-value text-neon-green">R$ {{ wallet().totalWon | number:'1.2-2' }}</span>
+          </div>
+
+          <div class="stat-col border-x">
+            <div class="stat-icon-label">
+              <span class="mini-icon">💀</span>
               <span class="stat-label">Perdas</span>
-              <span class="stat-value" style="color: var(--vermelho-erro)">R$ {{ wallet().totalLost | number:'1.2-2' }}</span>
-           </div>
-           <div class="stat-box">
+            </div>
+            <span class="stat-value text-error">R$ {{ wallet().totalLost | number:'1.2-2' }}</span>
+          </div>
+
+          <div class="stat-col">
+            <div class="stat-icon-label">
+              <span class="mini-icon">⏳</span>
               <span class="stat-label">Pendente</span>
-              <span class="stat-value" style="color: #eab308">R$ {{ wallet().totalPending | number:'1.2-2' }}</span>
-           </div>
+            </div>
+            <span class="stat-value text-warning">R$ {{ wallet().totalPending | number:'1.2-2' }}</span>
+          </div>
         </div>
 
-        <div class="pending-info arcade-font" style="font-size: 0.5rem; text-align: center; margin-top: 10px; opacity: 0.8;">
-           {{ wallet().pendingBetsCount }} apostas aguardando sorteio
+        <div class="pending-bets-footer">
+          <div class="bets-count-tag arcade-font">
+            {{ wallet().pendingBetsCount }} APOSTAS ATIVAS
+          </div>
         </div>
-      </div>
+      </section>
 
-      <div class="bet-panel section-container">
-        <h3 class="arcade-font text-neon-indigo" style="font-size: 0.8rem; margin-bottom: 20px;">Fazer Aposta</h3>
-
+      <section class="bet-panel section-container">
+        <h3 class="arcade-font text-neon-indigo bet-panel-title">Fazer Aposta</h3>
         <form [formGroup]="betForm" (ngSubmit)="onSubmit()">
-          
           <div class="bet-types-container-cards">
             <label class="radio-label-card">
               <input type="radio" formControlName="betType" value="GROUP">
@@ -116,13 +115,13 @@
           </div>
 
           <div class="form-group mode-selection-group">
-            <label class="arcade-font" style="font-size: 0.6rem; color: var(--azul-claro);">Modo de Aposta</label>
-            <div class="bet-modes-container">
-              <label class="radio-label-mode">
+            <span class="label-small arcade-font text-blue-light">Modo de Aposta</span>
+            <div class="bet-modes-container-cards">
+              <label class="radio-label-card">
                 <input type="radio" formControlName="betMode" value="SIMPLE">
                 <span>Simples</span>
               </label>
-              <label class="radio-label-mode">
+              <label class="radio-label-card">
                 <input type="radio" formControlName="betMode" value="SURROUNDED">
                 <span>Cercada</span>
               </label>
@@ -130,56 +129,56 @@
           </div>
 
           <div class="form-group">
-            <label class="arcade-font" style="font-size: 0.6rem; color: var(--azul-claro);">Número Escolhido</label>
-            <input 
-                type="text" 
-                formControlName="betValue" 
-                placeholder="Ex: 15" 
-                class="arcade-input"
-                [class.input-error]="betForm.get('betValue')?.invalid && betForm.get('betValue')?.touched"
-              >
-              
-            @if (betForm.get('betValue')?.invalid && betForm.get('betValue')?.touched) {
-              <div class="error-feedback-container">
-                <small class="error-text">
-                  @if (betForm.get('betType')?.value === 'GROUP') { ⚠️ Grupo deve ser entre 01 e 25. }
-                  @if (betForm.get('betType')?.value === 'TENS') { ⚠️ Digite exatos 2 números. }
-                  @if (betForm.get('betType')?.value === 'THOUSANDS') { ⚠️ Digite exatos 4 números. }
-                  @if (betForm.get('betValue')?.errors?.['pattern']) { ⚠️ Use apenas números. }
-                </small>
+            <label for="betValue" class="label-small arcade-font text-blue-light">Número Escolhido</label>
+            <input id="betValue" type="text" formControlName="betValue" class="arcade-input" 
+                  [class.input-error]="betForm.get('betValue')?.invalid && betForm.get('betValue')?.touched">
+
+            @if (getErrorMessage()) {
+              <div class="error-message arcade-font">
+                {{ getErrorMessage() }}
               </div>
             }
           </div>
 
           <div class="form-group">
-            <label class="arcade-font" style="font-size: 0.6rem; color: var(--azul-claro);">Valor (R$)</label>
-            <input type="number" formControlName="wagerAmount" placeholder="0.00" class="arcade-input">
+            <label for="wagerAmount" class="label-small arcade-font text-blue-light">Valor (R$)</label>
+            <input id="wagerAmount" type="number" formControlName="wagerAmount" class="arcade-input">
           </div>
 
           <div class="quick-values">
             @for (val of quickValues; track val) {
-              <button type="button" class="btn-quick arcade-font" (click)="setQuickValue(val)" style="font-size: 0.5rem;">
-                ${{val}}
-              </button>
+              <button type="button" class="btn-quick arcade-font" (click)="setQuickValue(val)">${{val}}</button>
             }
           </div>
 
-          <button 
-            type="submit" 
-            class="btn-arcade btn-main-action btn-blink btn-full arcade-font"
-            [disabled]="isLoading() || betForm.invalid"
-            style="font-size: 0.7rem;">
+          <button type="submit" class="btn-arcade btn-main-action btn-blink btn-full arcade-font" [disabled]="isLoading() || betForm.invalid">
             {{ isLoading() ? 'Processando...' : 'Confirmar Aposta' }}
           </button>
         </form>
-      </div>
+      </section>
     </aside>
   </main>
 
-  <footer class="footer-arcade">
-    <div class="container footer-content">
-      <p class="arcade-font text-neon-indigo" style="font-size: 0.8rem; margin-bottom: 10px;">BichoFull Arcade</p>
-      <p style="font-size: 0.7rem; opacity: 0.7;">Simulador Educacional de Probabilidades. Não envolve dinheiro real.</p>
+  <nav class="mobile-tab-bar">
+    <a routerLink="/dashboard" class="tab-item" routerLinkActive="active">
+      <span class="tab-icon">🎯</span>
+      <span class="tab-label">Apostar</span>
+    </a>
+    <a routerLink="/history" class="tab-item" routerLinkActive="active">
+      <span class="tab-icon">📜</span>
+      <span class="tab-label">Histórico</span>
+    </a>
+    <a (click)="logout()" (keydown.enter)="logout()" class="tab-item" role="button" 
+   tabindex="0">
+      <span class="tab-icon">🚪</span>
+      <span class="tab-label">Sair</span>
+    </a>
+  </nav>
+
+  <footer class="footer-arcade" role="contentinfo">
+    <div class="footer-content">
+      <p class="footer-text">Simulador Educacional - Não envolve dinheiro real</p>
+      <p class="footer-text">BichoFull - Fins Educacionais</p>
     </div>
   </footer>
 </div>

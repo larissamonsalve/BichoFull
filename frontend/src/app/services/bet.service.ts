@@ -1,12 +1,13 @@
-// app/services/bet.service.ts
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 // Tipagem rigorosa para evitar enviar dados errados
 export type BetType = 'GROUP' | 'TENS' | 'THOUSANDS';
-export type BetMode = 'SIMPLE' | 'SURROUNDED'; 
+export type BetMode = 'SIMPLE' | 'SURROUNDED';
+export type BetStatus = 'PENDING' | 'WINNER' | 'LOSER';
 
+// DTO para envio de aposta
 export interface BetRequestDTO {
   betType: BetType;
   betMode: BetMode;
@@ -14,20 +15,40 @@ export interface BetRequestDTO {
   wagerAmount: number;
 }
 
+// Interface para o Histórico 
+export interface BetHistoryDTO {
+  id: number;
+  betType: BetType;
+  betMode: BetMode;
+  betValue: string;
+  wagerAmount: number;
+  prizeWon: number;
+  status: BetStatus;
+  createdAt: string; 
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class BetService {
-  private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:8080/api/bets';
+  //readonly para segurança contra modificações
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = 'http://localhost:8080/api/bets';
 
+  /**
+   * Registra uma nova aposta no servidor.
+   * * @param betRequest O objeto contendo os dados da aposta (tipo, valor, etc).
+   * @returns Um Observable que emitirá a mensagem de sucesso vinda do Backend.
+   * @throws Retorna erro 400 se o saldo for insuficiente.
+   */
   placeBet(betRequest: BetRequestDTO): Observable<string> {
-    // responseType: 'text' porque o backend retorna apenas a string "Aposta realizada com sucesso!"
-    return this.http.post(`${this.apiUrl}`, betRequest, { responseType: 'text' });
+    return this.http.post(`${this.apiUrl}`, betRequest, { 
+      responseType: 'text' 
+    }) as Observable<string>;
   }
 
-  // Método preparado para o endpoint de histórico que criámos
-  getHistory(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/history`);
+  //Busca o histórico de apostas do usuário autenticado
+    getHistory(): Observable<BetHistoryDTO[]> {
+    return this.http.get<BetHistoryDTO[]>(`${this.apiUrl}/history`);
   }
 }
