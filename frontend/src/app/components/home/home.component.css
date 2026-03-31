@@ -318,7 +318,7 @@ h1, h2, h3, .logo, .multiplier {
   width: 100%;
 }
 
-/* Reutilizando o pulso que criamos antes */
+/* Reutilizando o pulsar dos botões */
 .btn-blink-final {
   animation: arcade-pulse-suave 2s infinite ease-in-out;
   min-width: 280px; /* Garante que o botão tenha um bom tamanho */

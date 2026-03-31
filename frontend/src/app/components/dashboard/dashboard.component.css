@@ -1,0 +1,667 @@
+:host {
+  /* Redefinição das Variáveis Locais (Garante que o CSS funcione) */
+  --bg-page: #0b0c13;
+  --bg-card: #151726;
+  --azul-arroxeado: #6366f1;
+  --azul-claro: #a5b4fc;
+  --rosa-neon: #ff007f;
+  --texto-branco: #e0e7ff;
+  --verde-sucesso: #22c55e;
+  --vermelho-erro: #ef4444;
+  --font-arcade: 'Press Start 2P', cursive;
+
+  display: block;
+  min-height: 100vh;
+  background-color: var(--bg-page);
+  color: var(--texto-branco);
+  font-family: system-ui, sans-serif;
+  padding-bottom: 80px; /* Espaço para a Tab Bar */
+  
+  /* TRAVA DE SEGURANÇA: Impede que qualquer coisa crie scroll lateral no body */
+  overflow-x: hidden; 
+}
+
+/* RESET DE ENGENHARIA: Garante que padding e border não aumentem o tamanho dos elementos */
+* {
+  box-sizing: border-box;
+}
+
+/* ==========================================================================
+   2. NAVBAR & LOGO (ESTILO HOME)
+   ========================================================================== */
+.arcade-header-nav {
+  background-color: var(--bg-card);
+  border-bottom: 3px solid var(--azul-arroxeado);
+  padding: 15px 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%; /* Garante que a barra ocupe a largura total sem vazar */
+}
+
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.arcade-logo {
+  text-decoration: none;
+  font-family: var(--font-arcade);
+  font-size: 1.2rem;
+  color: var(--azul-arroxeado);
+  text-shadow: 2px 2px 0 #000;
+  text-transform: uppercase;
+}
+
+.nav-links-desktop { display: flex; gap: 20px; }
+.nav-link { color: #fff; text-decoration: none; font-size: 0.9rem; font-weight: 600; }
+.nav-link.active { color: var(--azul-arroxeado); border-bottom: 2px solid var(--azul-arroxeado); padding-bottom: 5px; }
+
+.nav-user-info { display: flex; align-items: center; gap: 15px; }
+.nav-balance { font-weight: bold; color: var(--verde-sucesso); }
+.welcome-text { color: var(--azul-claro); font-size: 0.85rem; }
+.btn-logout { background: none; border: none; color: #fff; cursor: pointer; font-size: 1.2rem; }
+
+/* ==========================================================================
+   3. LAYOUT & CARDS
+   ========================================================================== */
+.main-layout {
+  display: flex;
+  flex-direction: row;
+  gap: 25px;
+  max-width: 1400px;
+  margin: 20px auto;
+  padding: 0 20px;
+  width: 100%; /* Ocupa 100% da tela respeitando o padding */
+}
+
+.section-container {
+  background-color: var(--bg-card);
+  border: 3px solid var(--azul-arroxeado);
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+  width: 100%; /* Garante que o card ocupe o espaço disponível na sidebar */
+}
+
+.animals-section { 
+  flex: 1; 
+  min-width: 0; /* CRÍTICO: Permite que o flex-item encolha abaixo do tamanho do grid */
+}
+
+.sidebar-right { 
+  width: 360px; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 20px; 
+  flex-shrink: 0; /* Impede que a barra lateral amasse no desktop */
+}
+
+/* Grid de Animais */
+.animal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 15px;
+  width: 100%; /* Garante que o grid não ultrapasse a section */
+}
+
+.animal-card-dark {
+  background-color: #0b0c13;
+  border: 2px solid #2e3247;
+  border-radius: 10px;
+  padding: 15px;
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+  transition: 0.2s ease;
+}
+
+.animal-card-dark:hover { 
+  transform: translateY(-5px); 
+  border-color: var(--azul-arroxeado); 
+  box-shadow: 0 0 15px rgba(99, 102, 241, 0.4); 
+}
+
+.animal-name-dark {
+  display: block;
+  font-family: var(--font-arcade);
+  font-size: 0.6rem;
+  color: #fff;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.animal-icon { width: 55px; height: 55px; margin-bottom: 10px; }
+.ten-badge-indigo {
+  background-color: #1e1b4b;
+  color: var(--azul-claro);
+  font-size: 0.7rem;
+  padding: 2px 5px;
+  border-radius: 4px;
+  border: 1px solid var(--azul-arroxeado);
+  margin: 2px;
+}
+
+/* ==========================================================================
+   4. TAB BAR MOBILE (ESTILO INSTAGRAM)
+   ========================================================================== */
+.mobile-tab-bar {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: var(--bg-card);
+  border-top: 3px solid var(--azul-arroxeado);
+  height: 75px;
+  z-index: 2000;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: var(--azul-claro);
+  cursor: pointer;
+}
+
+.tab-icon { font-size: 1.5rem; margin-bottom: 4px; }
+.tab-label {
+  font-family: var(--font-arcade);
+  font-size: 0.5rem;
+  text-transform: uppercase;
+}
+
+.tab-item.active { color: var(--azul-arroxeado); }
+
+/* --- CARTEIRA --- */
+
+.balance-card {
+  padding: 0 !important; /* Deixa o fundo escuro da barra inferior encostar nas bordas */
+  overflow: hidden;
+}
+
+.wallet-main-display {
+  padding: 25px;
+  text-align: center;
+  background: var(--bg-card);  
+}
+
+.wallet-header-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+/* TITULO DA CARTEIRA AZUL ARCADE */
+#wallet-title {
+  font-family: var(--font-arcade) !important;
+  font-size: 0.7rem;
+  color: #6366f1; /* O Azul Indigo da imagem */
+  text-shadow: 0 0 10px rgba(99, 102, 241, 0.5); /* Brilho neon azul */
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+/* TITULO DA CARTEIRA - BRANCO PURO */
+#wallet-title {
+  font-family: var(--font-arcade) !important;
+  font-size: 0.7rem;
+  color: #ffffff; /* Branco total */
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.3); /* Brilho sutil */
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+/* BADGE DE APOSTAS ATIVAS - BRANCO TERMINAL */
+.bets-count-tag {
+  font-family: var(--font-arcade);
+  font-size: 0.5rem;
+  color: #ffffff; 
+  background: rgba(255, 255, 255, 0.05); /* Fundo quase invisível */
+  border: 1px solid rgba(255, 255, 255, 0.2); /* Borda branca suave */
+  padding: 6px 14px;
+  border-radius: 20px;
+  display: inline-block;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+}
+
+.bets-count-tag:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: scale(1.05);
+}
+
+/* AJUSTE DA DIV PAI (FOOTER DA CARTEIRA) */
+.pending-bets-footer {
+  padding: 12px 0;
+  background: rgba(0, 0, 0, 0.5);
+  text-align: center;
+  /* Linha tracejada branca para fechar o layout */
+  border-top: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+.balance-amount {
+  color: #22c55e !important;
+  text-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+  font-weight: 800;
+  font-size: 2.2rem !important;
+  margin: 10px 0 5px 0;
+}
+
+.profit-badge-mini {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  opacity: 0.9;
+}
+.profit-badge-mini.positive { color: var(--verde-sucesso); }
+.profit-badge-mini.negative { color: var(--vermelho-erro); }
+
+/* --- BARRA DE STATUS INFERIOR --- */
+.stats-footer-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  background: rgba(0, 0, 0, 0.3); /* Fundo mais escuro como na Imagem 2 */
+  border-top: 1px solid rgba(99, 102, 241, 0.2);
+  padding: 15px 5px;
+}
+
+.stat-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.border-x {
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-icon-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mini-icon { font-size: 0.9rem; }
+
+.stat-label {
+  font-size: 0.65rem;
+  color: var(--texto-branco);
+  opacity: 0.8;
+}
+
+.stat-value {
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+
+/* Reativando as cores neon para os valores */
+.text-neon-green { color: #22c55e; text-shadow: 0 0 5px rgba(34, 197, 94, 0.3); }
+.text-error { color: #ef4444; }
+.text-warning { color: #eab308; }
+
+/* Animação simples para o ícone de maleta */
+.icon-pulse {
+  display: inline-block;
+  animation: mini-float 3s ease-in-out infinite;
+}
+
+.pending-bets-footer {
+  padding: 12px 0;
+  background: rgba(0, 0, 0, 0.4); /* Fundo um pouco mais escuro que a barra */
+  text-align: center;
+  border-top: 1px dashed rgba(99, 102, 241, 0.2);
+}
+
+.bets-count-tag {
+  font-family: var(--font-arcade);
+  font-size: 0.5rem;
+  
+  /* Amarelo seguindo o padrão da coluna "Pendente" */
+  color: #eab308; 
+  background: rgba(234, 179, 8, 0.1); /* Fundo amarelo translúcido */
+  border: 1px solid rgba(234, 179, 8, 0.3);
+  
+  padding: 6px 14px;
+  border-radius: 20px;
+  display: inline-block;
+  letter-spacing: 1px;
+  
+  /* Brilho suave para destacar no fundo escuro */
+  text-shadow: 0 0 5px rgba(234, 179, 8, 0.4);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  
+  transition: all 0.3s ease;
+}
+
+.bets-count-tag:hover {
+  background: rgba(234, 179, 8, 0.2);
+  transform: scale(1.05);
+}
+
+@keyframes mini-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+
+/* --- FAZER APOSTA --- */
+.bet-types-container-cards { 
+  display: flex; 
+  gap: 10px; 
+  margin-bottom: 20px;
+  width: 100%; 
+}
+
+.radio-label-card { flex: 1; cursor: pointer; }
+
+.radio-label-card input { position: absolute; opacity: 0; }
+
+.radio-label-card span {
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  justify-content: center;
+  padding: 12px 5px;
+  background: rgba(255, 255, 255, 0.05); 
+  border: 2px solid #2e3247; 
+  border-radius: 10px;
+  color: var(--azul-claro); 
+  font-weight: bold; 
+  font-size: 0.7rem; 
+  text-align: center;
+  transition: all 0.3s ease;
+  min-height: 65px;
+}
+
+/* Efeito de Seleção nos Cards */
+.radio-label-card input:checked + span { 
+  border-color: var(--azul-arroxeado); 
+  background: rgba(99, 102, 241, 0.15); 
+  color: #fff;
+  box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+  transform: translateY(-2px);
+}
+
+.radio-label-card span small {
+  font-size: 0.55rem;
+  opacity: 0.8;
+  margin-top: 4px;
+}
+
+/* --- BOTÕES DE VALOR SUGERIDO (Quick Values) --- */
+.quick-values {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin: 15px 0 25px 0;
+}
+
+.btn-quick {
+  background: #0b0c13;
+  border: 2px solid #2e3247;
+  color: var(--azul-claro);
+  border-radius: 8px;
+  padding: 10px 0;
+  cursor: pointer;
+  font-family: var(--font-arcade);
+  font-size: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.btn-quick:hover {
+  border-color: var(--azul-arroxeado);
+  color: #fff;
+  background: rgba(99, 102, 241, 0.1);
+}
+
+.btn-quick:active {
+  transform: scale(0.95);
+}
+
+/* --- AJUSTE DOS INPUTS (NÚMERO E VALOR) --- */
+.arcade-input {
+  width: 100%;
+  padding: 12px 15px;
+  background-color: #0b0c13 !important; /* Remove o fundo branco */
+  border: 2px solid #2e3247 !important;
+  border-radius: 8px;
+  color: #fff !important; /* Letra branca */
+  font-family: inherit;
+  font-size: 1rem;
+  margin-top: 8px;
+  margin-bottom: 5px;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.arcade-input:focus {
+  border-color: var(--azul-arroxeado) !important;
+  box-shadow: 0 0 10px rgba(99, 102, 241, 0.3);
+}
+
+/* Estilo para a mensagem de erro */
+.error-message {
+  color: var(--vermelho-erro);
+  font-size: 0.5rem; /* Letra pixelada pequena */
+  margin-top: 5px;
+  text-shadow: 0 0 5px rgba(239, 68, 68, 0.4);
+  letter-spacing: 1px;
+  animation: blink 1s infinite; /* Pisca para chamar atenção */
+}
+
+/* Borda vermelha no input quando estiver inválido */
+.arcade-input.input-error {
+  border-color: var(--vermelho-erro) !important;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.2) !important;
+}
+
+/* Animação de piscar (estilo alerta de arcade) */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* --- MODO DE APOSTA (IGUAL AOS CARDS DE CIMA) --- */
+.mode-selection-group {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.bet-modes-container-cards {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+  width: 100%;
+}
+
+/* Reutilizando o estilo dos cards superiores para o modo de aposta */
+.bet-modes-container-cards .radio-label-card span {
+  padding: 15px 5px; /* Altura ajustada para o texto simples */
+  min-height: 50px;
+  font-size: 0.8rem;
+}
+
+/* --- AJUSTE DOS INPUTS (NÚMERO E VALOR) --- */
+.arcade-input {
+  width: 100%;
+  padding: 12px 15px;
+  background-color: #0b0c13 !important;
+  border: 2px solid #2e3247 !important;
+  border-radius: 8px;
+  color: #fff !important;
+  font-family: inherit;
+  font-size: 1rem;
+  margin-top: 8px;
+  margin-bottom: 5px;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.arcade-input:focus {
+  border-color: var(--azul-arroxeado) !important;
+  box-shadow: 0 0 10px rgba(99, 102, 241, 0.3);
+}
+
+/* --- BOTÕES DE VALOR (QUICK VALUES) --- */
+.quick-values {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin: 15px 0 25px 0;
+}
+
+.btn-quick {
+  background: #0b0c13;
+  border: 2px solid #2e3247;
+  color: var(--azul-claro);
+  border-radius: 8px;
+  padding: 10px 0;
+  cursor: pointer;
+  font-family: var(--font-arcade);
+  font-size: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.btn-quick:hover {
+  border-color: var(--azul-arroxeado);
+  background: rgba(99, 102, 241, 0.1);
+  color: #fff;
+}
+
+/* Estilizando o círculo do rádio para ser Neon */
+.radio-label-mode input[type="radio"] {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #2e3247;
+  border-radius: 50%;
+  outline: none;
+  transition: all 0.2s;
+  position: relative;
+  cursor: pointer;
+  background: #0b0c13;
+}
+
+.radio-label-mode input[type="radio"]:checked {
+  border-color: var(--rosa-neon);
+  box-shadow: 0 0 8px var(--rosa-neon);
+}
+
+.radio-label-mode input[type="radio"]:checked::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  background: var(--rosa-neon);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+}
+
+/* --- BOTÃO CONFIRMAR APOSTA (Estilo Home com Hover Rosa) --- */
+.btn-main-action {
+  width: 100%; 
+  padding: 18px; 
+  border: 3px solid #000; 
+  border-radius: 8px;
+  background-color: var(--azul-arroxeado); 
+  color: #fff; 
+  cursor: pointer;
+  box-shadow: 0 6px 0 #3730a3; 
+  font-family: var(--font-arcade); 
+  font-size: 0.7rem;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+}
+
+.btn-main-action:hover:not(:disabled) {
+  background-color: var(--rosa-neon) !important;
+  box-shadow: 0 6px 0 #9d174d !important;
+  transform: translateY(-2px);
+}
+
+.btn-main-action:active:not(:disabled) {
+  transform: translateY(4px);
+  box-shadow: none !important;
+}
+
+.btn-main-action:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: grayscale(1);
+}
+
+/* ==========================================================================
+   6. RESPONSIVIDADE
+   ========================================================================== */
+@media (max-width: 1100px) {
+  .main-layout { 
+    flex-direction: column; 
+    padding: 0 15px;
+  }
+  .sidebar-right { 
+    width: 100%; 
+    order: -1; /* Mantém a aposta em cima no mobile se desejar, ou remova para ficar embaixo */
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-links-desktop, .btn-logout { display: none; }
+  .welcome-text { font-size: 0.7rem; } /* Diminui um pouco o texto no mobile */
+  
+  .mobile-tab-bar { display: flex; }
+  
+  .animal-grid { 
+    grid-template-columns: repeat(2, 1fr); /* Trava 2 colunas no mobile para não vazar */
+  }
+  
+  .nav-container { 
+    padding: 0 15px; 
+  }
+  
+  .section-container { padding: 15px; }
+}
+
+/* ==========================================================================
+   7. RODAPÉ 
+   ========================================================================== */
+.footer-arcade {
+  background-color: var(--bg-page);
+  padding: 20px 0; 
+  text-align: center;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.footer-text {
+  color: #4f6ef7;
+  font-size: 0.75rem; 
+  margin: 2px 0;
+  font-family: system-ui, sans-serif;
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .footer-arcade {
+    padding-bottom: 85px; 
+  }
+}
