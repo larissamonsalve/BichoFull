@@ -47,8 +47,8 @@ jobs:
         run: npm run lint
         working-directory: ./frontend
 
-      - name: Run Tests (Headless)
-        run: npm run test -- --no-watch --browsers=ChromeHeadless
+      - name: Run Tests (CI Mode)
+        run: npm run test -- --watch=false
         working-directory: ./frontend
 
       - name: Build Angular
