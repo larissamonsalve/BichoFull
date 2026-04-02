@@ -52,9 +52,9 @@ export class DrawsComponent implements OnInit, OnDestroy {
   
   private readonly userWinningBetsCount = signal<number>(0);
 
-  // Configuração da Paginação Local
+  // Configuração da Paginação Local (Alterado para 5)
   readonly currentPage = signal<number>(1);
-  readonly itemsPerPage = 20;
+  readonly itemsPerPage = 5;
   
   readonly historyDraws = computed(() => this.draws().slice(1)); 
   
@@ -67,7 +67,6 @@ export class DrawsComponent implements OnInit, OnDestroy {
   readonly totalPages = computed(() => Math.ceil(this.historyDraws().length / this.itemsPerPage));
   readonly slotNumbers = signal<string[]>(['0000', '0000', '0000', '0000', '0000']);
   
-  // CORREÇÃO AQUI: Substituição do tipo 'any' pelo retorno correto do TypeScript para setInterval
   private timerInterval: ReturnType<typeof setInterval> | undefined;
   private slotInterval: ReturnType<typeof setInterval> | undefined;
   
@@ -108,9 +107,6 @@ export class DrawsComponent implements OnInit, OnDestroy {
     this.router.navigate(['/']);
   }
 
-  /**
-   * @description Utiliza o serviço correto para buscar o dicionário de Animais.
-   */
   private loadAnimals(): void {
     this.animalService.getAnimals().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => this.animals.set(data)

@@ -37,4 +37,15 @@ export class HomeComponent implements OnInit {
       error: (err) => console.error('Erro ao carregar animais:', err)
     });
   }
+
+  /**
+   * @description Rola a página suavemente até o elemento com o ID fornecido.
+   * @param sectionId O ID da seção destino.
+   */
+  scrollToSection(sectionId: string): void {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
 }

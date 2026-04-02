@@ -98,12 +98,11 @@ export class HistoryComponent implements OnInit {
   }
 
   /**
-   * @description Carrega o histórico detalhado de apostas paginado.
-   * CORREÇÃO: "page = 0" em vez de "page: number = 0" para aproveitar a inferência do TS.
+   * @description Carrega o histórico detalhado de apostas paginado (Alterado para 5 por página).
    * @param page Índice da página que se pretende carregar.
    */
   loadBets(page = 0): void {
-    this.betService.getHistory(page, 10).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+    this.betService.getHistory(page, 5).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (response) => {
         this.bets.set(response.content);
         this.currentPage.set(response.number);

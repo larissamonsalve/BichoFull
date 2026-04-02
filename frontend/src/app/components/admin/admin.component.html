@@ -2,17 +2,19 @@
   
   <header class="arcade-header-nav" role="banner">
     <div class="nav-container">
-      <a routerLink="/dashboard" class="arcade-logo arcade-font">BichoFull</a>
+      <a (click)="logout()" class="arcade-logo arcade-font" role="button" tabindex="0">BichoFull</a>
 
       <nav class="nav-links-desktop" role="navigation">
         <a routerLink="/dashboard" class="nav-link">Apostar</a>
         <a routerLink="/draws" class="nav-link">Sorteios</a>
+        <a routerLink="/history" class="nav-link">Histórico</a>
         <span class="nav-link active admin-badge">👑 Painel Admin</span>
       </nav>
 
       <div class="nav-user-info">
         <button (click)="logout()" class="btn-logout" title="Sair do Sistema" type="button">
           <span class="icon" aria-hidden="true">➡️</span>
+          <span class="logout-text">Sair</span>
         </button>
       </div>
     </div>
@@ -21,8 +23,7 @@
   <main class="main-layout container admin-layout">
     
     <aside class="admin-sidebar">
-      
-      <section class="section-container action-card text-center">
+      <section class="section-container action-card text-center animate-slide-in delay-1">
         <h3 class="arcade-font text-neon-green mb-4 title-with-icon">
           <span>🎲</span> Sorteio Aleatório
         </h3>
@@ -33,7 +34,7 @@
         </button>
       </section>
 
-      <section class="section-container action-card-warning mt-4">
+      <section class="section-container action-card-warning mt-4 animate-slide-in delay-2">
         <h3 class="arcade-font text-warning mb-4 title-with-icon">
           <span>⚠️</span> Sorteio Manual
         </h3>
@@ -74,7 +75,7 @@
 
     <section class="admin-main-content">
       
-      <div class="section-container mb-4">
+      <div class="section-container mb-4 animate-fade-in delay-3">
         <h3 class="arcade-font text-neon-green mb-4 title-with-icon">
           <span>🏆</span> Pagamentos Recentes (Vencedores)
         </h3>
@@ -90,13 +91,13 @@
               </tr>
             </thead>
             <tbody>
-              @for (bet of winningBets(); track bet.id) {
+              @for (bet of winningBetsPaginated(); track bet.id) {
                 <tr class="row-winner">
                   <td class="text-blue-light">{{ bet.createdAt | date:'dd/MM HH:mm' }}</td>
                   
                   <td>
                     <strong class="text-neon-green">@{{ bet.username }}</strong><br>
-                    <small class="text-blue-light" style="font-size: 0.6rem;">{{ bet.email }}</small>
+                    <small class="text-blue-light table-subtext">{{ bet.email }}</small>
                   </td>
                   
                   <td>
@@ -105,7 +106,7 @@
                         <img [src]="'assets/bichos/' + animal.imagePath" [alt]="animal.name" class="table-animal-img">
                       }
                       <div class="bet-details-text">
-                        <span class="badge-type">{{ bet.betType }}</span>
+                        <span class="badge-type">{{ translateType(bet.betType) }}</span>
                         <span class="arcade-font bet-number">{{ bet.betValue }}</span>
                       </div>
                     </div>
@@ -113,10 +114,10 @@
                   
                   <td>
                     <strong class="text-white">R$ {{ bet.wagerAmount | number:'1.2-2' }}</strong><br>
-                    <small class="text-blue-light">{{ bet.betMode }}</small>
+                    <small class="text-blue-light">{{ translateMode(bet.betMode) }}</small>
                   </td>
 
-                  <td class="text-neon-green font-bold" style="font-size: 1.1rem;">
+                  <td class="text-neon-green font-bold text-profit">
                     + R$ {{ bet.prizeWon | number:'1.2-2' }}
                   </td>
                 </tr>
@@ -126,13 +127,21 @@
             </tbody>
           </table>
         </div>
+
+        @if (winTotalPages() > 1) {
+          <div class="pagination-controls">
+            <button class="btn-page" (click)="prevWinPage()" [disabled]="winCurrentPage() === 0">Anterior</button>
+            <span class="page-info arcade-font">Página {{ winCurrentPage() + 1 }} de {{ winTotalPages() }}</span>
+            <button class="btn-page" (click)="nextWinPage()" [disabled]="winCurrentPage() >= winTotalPages() - 1">Próxima</button>
+          </div>
+        }
       </div>
 
-      <div class="section-container">
+      <div class="section-container animate-fade-in delay-4">
         <h3 class="arcade-font text-blue-light mb-4 title-with-icon">
           <span>📜</span> APOSTAS (Tempo Real)
         </h3>
-        <div class="table-responsive max-h-500">
+        <div class="table-responsive">
           <table class="arcade-table">
             <thead>
               <tr>
@@ -144,14 +153,14 @@
               </tr>
             </thead>
             <tbody>
-              @for (bet of allBets(); track bet.id) {
+              @for (bet of allBetsPaginated(); track bet.id) {
                 <tr>
-                  <td class="arcade-font text-blue-light" style="font-size: 0.6rem;">#{{ bet.id }}</td>
+                  <td class="arcade-font text-blue-light table-hash">#{{ bet.id }}</td>
                   <td>
                     <span class="status-badge" [ngClass]="bet.status.toLowerCase()">
-                      {{ bet.status }}
+                      {{ translateStatus(bet.status) }}
                     </span><br>
-                    <small class="text-blue-light" style="font-size: 0.65rem; margin-top: 5px; display: block;">
+                    <small class="text-blue-light table-time-block">
                       {{ bet.createdAt | date:'dd/MM HH:mm' }}
                     </small>
                   </td>
@@ -164,8 +173,8 @@
                         <img [src]="'assets/bichos/' + animal.imagePath" [alt]="animal.name" class="table-animal-img-small">
                       }
                       <div class="bet-details-text">
-                        <span class="arcade-font bet-number" style="font-size: 0.7rem;">{{ bet.betValue }}</span>
-                        <small class="text-blue-light">{{ bet.betType }}</small>
+                        <span class="arcade-font bet-number table-bet-value">{{ bet.betValue }}</span>
+                        <small class="text-blue-light">{{ translateType(bet.betType) }}</small>
                       </div>
                     </div>
                   </td>
@@ -177,6 +186,14 @@
             </tbody>
           </table>
         </div>
+
+        @if (allTotalPages() > 1) {
+          <div class="pagination-controls">
+            <button class="btn-page" (click)="prevAllPage()" [disabled]="allCurrentPage() === 0">Anterior</button>
+            <span class="page-info arcade-font">Página {{ allCurrentPage() + 1 }} de {{ allTotalPages() }}</span>
+            <button class="btn-page" (click)="nextAllPage()" [disabled]="allCurrentPage() >= allTotalPages() - 1">Próxima</button>
+          </div>
+        }
       </div>
 
     </section>

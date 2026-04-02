@@ -534,7 +534,7 @@
     display: flex;
     flex-direction: row;
     justify-content: center;
-    align-items: center;
+    align-items: flex-end;
     gap: 20px; 
   }
   
@@ -579,5 +579,11 @@
   .btn-text-arcade {
     font-size: 0.42rem; 
     margin-top: -2px;
+  }
+
+  .joystick-label {
+    margin-top: 10px;    
+    position: relative;
+    z-index: 10;
   }
 }

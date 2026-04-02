@@ -2,9 +2,7 @@
   @if (showConfetti()) {
     <div class="confetti-container" aria-hidden="true">
       @for (piece of confettiPieces; track piece) {
-        <div class="confetti" 
-             [style.left.%]="(piece * 1.5) % 100" 
-             [style.animation-delay.s]="(piece % 10) * 0.2"></div>
+        <div class="confetti"></div>
       }
     </div>
   }
@@ -27,13 +25,14 @@
 
       <div class="nav-user-info">
         <div class="nav-balance text-neon-green">
-          <span class="icon" aria-hidden="true">💼</span> R$ {{ wallet().balance | number:'1.2-2' }}
+          <span class="icon icon-pulse" aria-hidden="true">💼</span> R$ {{ wallet().balance | number:'1.2-2' }}
         </div>
         <span class="welcome-text">
           Olá, <strong class="user-name-highlight">{{ userName() }}</strong>
         </span>
-        <button (click)="logout()" class="btn-logout" title="Sair" type="button">
+        <button (click)="goHomeAndLogout()" class="btn-logout" title="Sair" type="button">
           <span class="icon" aria-hidden="true">➡️</span>
+          <span class="logout-text">Sair</span>
         </button>
       </div>
     </div>
@@ -74,7 +73,8 @@
     </section>
 
     <section class="section-container last-draw-section relative">
-      <div class="crt-scanline-overlay" aria-hidden="true"></div> <h3 class="arcade-font title-center z-index-content">🕹️ ÚLTIMO RESULTADO</h3>
+      <div class="crt-scanline-overlay" aria-hidden="true"></div> 
+      <h3 class="arcade-font title-center z-index-content">🕹️ ÚLTIMO RESULTADO</h3>
       
       <div class="slot-machine-grid z-index-content">
         @for (prize of (isDrawing() ? slotNumbers() : getPrizesArray(latestDraw())); track $index) {
@@ -158,11 +158,4 @@
       <span class="tab-label">Sair</span>
     </a>
   </nav>
-
-  <footer class="footer-arcade" role="contentinfo">
-    <div class="footer-content">
-      <p class="footer-text">Simulador Educacional - Não envolve dinheiro real</p>
-      <p class="footer-text">BichoFull</p>
-    </div>
-  </footer>
 </div>
