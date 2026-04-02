@@ -6,9 +6,9 @@ import { ToastComponent } from './components/toast/toast.component';
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet, ToastComponent],
-  templateUrl: './app.component.html', // Nome corrigido
-  styleUrl: './app.component.css'      // Nome corrigido
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.css'     
 })
-export class AppComponent { // Classe renomeada para o padrão
+export class AppComponent {
   protected readonly title = signal('frontend');
 }
