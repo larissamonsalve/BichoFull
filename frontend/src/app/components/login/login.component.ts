@@ -45,9 +45,11 @@ export class LoginComponent {
         error: (err) => {
           this.errorMessage = typeof err.error === 'string' 
             ? err.error 
-            : 'Utilizador ou senha inválidos.';
+            : 'Usuário ou senha inválidos.';
         },
       });
+    } else {
+      this.loginForm.markAllAsTouched();
     }
   }
 }

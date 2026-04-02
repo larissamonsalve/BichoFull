@@ -21,6 +21,7 @@
         </span>
         <button (click)="goHomeAndLogout()" class="btn-logout" title="Sair" type="button">
           <span class="icon" aria-hidden="true">➡️</span>
+          <span class="logout-text">Sair</span>
         </button>
       </div>
     </div>
@@ -33,12 +34,12 @@
         HISTÓRICO DE APOSTAS
         <span class="scroll-icon" aria-hidden="true">📜</span>
       </h2>
-      <p class="text-blue-light">Acompanhe seu desempenho e estatísticas</p>
+      <p class="text-blue-light section-subtitle">Acompanhe seu desempenho e estatísticas</p>
     </div>
 
     @if (summary()) {
       <div class="summary-grid">
-        <div class="summary-card animate-slide-in" style="animation-delay: 0.1s;">
+        <div class="summary-card animate-slide-in">
           <div class="summary-header">
             <span class="summary-icon">🎟️</span>
             <span class="summary-label">Total de Apostas</span>
@@ -46,7 +47,7 @@
           <span class="summary-value arcade-font">{{ summary()?.totalBets }}</span>
         </div>
 
-        <div class="summary-card animate-slide-in" style="animation-delay: 0.2s;">
+        <div class="summary-card animate-slide-in">
           <div class="summary-header">
             <span class="summary-icon">🎯</span>
             <span class="summary-label">Taxa de Acerto</span>
@@ -54,7 +55,7 @@
           <span class="summary-value arcade-font">{{ summary()?.winRate }}%</span>
         </div>
 
-        <div class="summary-card border-green animate-slide-in" style="animation-delay: 0.3s;">
+        <div class="summary-card border-green animate-slide-in">
           <div class="summary-header">
             <span class="summary-icon">🏆</span>
             <span class="summary-label">Total Ganho</span>
@@ -62,7 +63,7 @@
           <span class="summary-value text-neon-green arcade-font">R$ {{ summary()?.totalWon | number:'1.2-2' }}</span>
         </div>
 
-        <div class="summary-card border-red animate-slide-in" style="animation-delay: 0.4s;">
+        <div class="summary-card border-red animate-slide-in">
           <div class="summary-header">
             <span class="summary-icon">💀</span>
             <span class="summary-label">Total Perdido</span>
@@ -88,7 +89,7 @@
           @for (bet of bets(); track bet.id; let i = $index) {
             <div class="history-card neon-hover">
               <div class="history-header">
-                <span class="arcade-font text-neon-indigo">Aposta #{{ totalElements() - (currentPage() * 10) - i }}</span>
+                <span class="arcade-font text-neon-indigo">Aposta #{{ totalElements() - (currentPage() * 5) - i }}</span>
                 <span class="text-blue-light">{{ bet.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
               </div>
               
@@ -109,7 +110,7 @@
                 <div class="detail-col">
                   <span class="text-blue-light">Valor / Modo:</span>
                   <span class="font-bold text-white">R$ {{ bet.wagerAmount | number:'1.2-2' }}</span>
-                  <small class="text-blue-light" style="font-size: 0.65rem;">{{ translateMode(bet.betMode) }}</small>
+                  <small class="text-blue-light mode-label">{{ translateMode(bet.betMode) }}</small>
                 </div>
 
                 <div class="detail-col">
@@ -123,7 +124,7 @@
                    } @else if (bet.status === 'LOSER') {
                       <span class="text-error font-bold">- R$ {{ bet.wagerAmount | number:'1.2-2' }}</span>
                    } @else {
-                      <span class="text-warning font-bold" style="color: #eab308;">Aguardando...</span>
+                      <span class="text-warning font-bold">Aguardando...</span>
                    }
                 </div>
               </div>
@@ -160,11 +161,4 @@
       <span class="tab-label">Sair</span>
     </a>
   </nav>
-
-  <footer class="footer-arcade" role="contentinfo">
-    <div class="footer-content">
-      <p class="footer-text">Simulador Educacional - Não envolve dinheiro real</p>
-      <p class="footer-text">BichoFull</p>
-    </div>
-  </footer>
 </div>

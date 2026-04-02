@@ -1,180 +1,247 @@
-/* Centraliza tudo na tela com o fundo escuro do Arcade */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+:host {
+  --bg-page: #0b0c13;
+  --bg-card: #151726;
+  --azul-arroxeado: #6366f1;
+  --azul-claro: #a5b4fc;
+  --rosa-neon: #ff007f;
+  --texto-branco: #e0e7ff;
+  --font-arcade: 'Press Start 2P', cursive;
+  display: block;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
 .arcade-page-wrapper {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background-color: var(--bg-page);
+  color: var(--texto-branco);
+}
+
+/* Layout Split-Screen */
+.main-content-split {
+  flex: 1;
+  display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #0b0c13; /* Mesmo fundo da Home */
+  gap: 40px; 
+  max-width: 1100px; 
+  margin: 0 auto;
   padding: 20px;
-  color: #e0e7ff;
-}
-
-/* Cabeçalho superior */
-.arcade-header-login {
-  text-align: center;
-  margin-bottom: 30px;
-}
-
-.arcade-logo {
-  font-family: 'Press Start 2P', cursive;
-  color: #6366f1; /* Azul Arroxeado */
-  font-size: 2.5rem;
-  margin-bottom: 10px;
-  text-shadow: 3px 3px 0px #000;
-}
-
-.arcade-subtitle {
-  font-size: 1.1rem;
-  color: #a5b4fc;
-  font-weight: 500;
-}
-
-/* Card de Login (Mesmo estilo section-container da Home) */
-.login-card {
   width: 100%;
-  max-width: 450px;
-  background-color: #151726;
-  border: 3px solid #6366f1;
-  border-radius: 12px;
-  padding: 40px;
-  box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
-  text-align: center;
 }
 
-.arcade-title {
-  font-family: 'Press Start 2P', cursive;
-  font-size: 1.5rem;
-  margin-bottom: 10px;
-  color: #fff;
-}
+.brand-section { flex: 1; max-width: 480px; text-align: left; }
 
-.login-instruction {
-  color: #a5b4fc;
-  margin-bottom: 30px;
-  font-size: 0.9rem;
-}
-
-/* Estilização dos Inputs */
-.arcade-form {
-  text-align: left;
-}
-
-.form-group {
-  margin-bottom: 20px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: bold;
-  font-size: 0.9rem;
-  color: #a5b4fc;
-}
-
-.arcade-input {
-  width: 100%;
-  padding: 12px 15px;
-  background-color: #0b0c13;
-  border: 2px solid #2e3247;
-  border-radius: 6px;
-  color: #fff;
-  font-size: 1rem;
-  transition: border-color 0.3s;
-}
-
-.arcade-input:focus {
-  outline: none;
-  border-color: #6366f1;
-  box-shadow: 0 0 8px rgba(99, 102, 241, 0.3);
-}
-
-/* Botão (Copiado da Home) */
-.btn-full {
-  width: 100%;
-  margin-top: 10px;
-}
-
-.btn-main-action {
-  background-color: #6366f1;
-  color: #fff;
-  padding: 15px;
-  border: 3px solid #000;
-  box-shadow: 0 6px 0 #3730a3;
-  font-weight: 800;
-  text-transform: uppercase;
-  cursor: pointer;
-  border-radius: 8px;
-}
-
-.btn-main-action:hover {
-  background-color: #ff007f; /* Rosa Neon no Hover */
-  border-color: #9d174d;
-  box-shadow: 0 6px 0 #9d174d;
-  transform: translateY(-2px);
-}
-
-.btn-main-action:disabled {
-  background-color: #4b5563;
-  box-shadow: none;
-  cursor: not-allowed;
-  border-color: #374151;
-}
-
-/* Links e Alertas */
-.footer-link {
-  margin-top: 25px;
-  font-size: 0.95rem;
-  color: #9ca3af;
-}
-
-.neon-link {
-  color: #6366f1;
-  text-decoration: none;
-  font-weight: bold;
-}
-
-.neon-link:hover {
-  color: #ff007f;
-  text-decoration: underline;
-}
-
-.alert-arcade {
-  background-color: rgba(220, 38, 38, 0.2);
-  border: 2px solid #dc2626;
-  color: #fca5a5;
-  padding: 10px;
-  margin-bottom: 20px;
-  border-radius: 6px;
-  font-size: 0.9rem;
-}
-
-.disclaimer {
-  margin-top: 30px;
-  font-size: 0.85rem;
-  color: #4b5563;
-  text-align: center;
-}
-
-/*LOGO*/
-/* Remove o sublinhado e mantém a cor do logo */
+/* Logo - Retornou ao tamanho original de 1.5rem */
 .arcade-logo-link {
   text-decoration: none;
   display: inline-block;
-  transition: transform 0.2s ease;
+  transition: transform 0.3s ease, filter 0.3s ease;
 }
-
-/* Efeito sutil ao passar o mouse para o usuário saber que é clicável */
 .arcade-logo-link:hover {
   transform: scale(1.05);
   filter: brightness(1.2);
 }
-
 .arcade-logo {
-  font-family: 'Press Start 2P', cursive;
-  color: #6366f1; 
-  font-size: 2.5rem;
-  margin-bottom: 10px;
-  text-shadow: 3px 3px 0px #000;
-  cursor: pointer; /* Muda o mouse para a "mãozinha" */
+  font-family: var(--font-arcade) !important;
+  color: var(--azul-arroxeado);
+  font-size: 1.5rem; 
+  text-shadow: 2px 2px 0 #000;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+}
+
+.arcade-subtitle { color: var(--azul-claro); font-size: 1.1rem; line-height: 1.6; }
+
+/* Card e Formulário */
+.form-section { flex: 1; max-width: 450px; width: 100%; }
+.login-card { 
+  background: var(--bg-card); 
+  border: 3px solid var(--azul-arroxeado); 
+  border-radius: 12px; 
+  padding: 35px; 
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+  margin-top: 25px; /* <--- Move o formulário um pouquinho mais para baixo */
+}
+
+/* Titulo - Retornou ao tamanho original de 1rem */
+.arcade-title { font-family: var(--font-arcade); font-size: 1rem; color: #fff; margin-bottom: 10px; text-align: center; }
+.login-instruction { color: var(--azul-claro); font-size: 0.9rem; margin-bottom: 25px; text-align: center; }
+
+/* Alinhamento à esquerda */
+.arcade-form {
+  text-align: left;
+}
+
+.form-group { margin-bottom: 18px; width: 100%; }
+.form-group label { 
+  display: block; 
+  font-size: 0.9rem; 
+  font-weight: bold; 
+  color: var(--azul-claro); 
+  margin-bottom: 6px; 
+  text-align: left; 
+}
+
+/* Inputs - Retornou ao tamanho original */
+.arcade-input {
+  width: 100%;
+  max-width: 100%;
+  padding: 12px;
+  background: var(--bg-page);
+  border: 2px solid #2e3247;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 0.9rem;
+  transition: border-color 0.3s;
+}
+.arcade-input:focus { outline: none; border-color: var(--azul-arroxeado); box-shadow: 0 0 10px rgba(99, 102, 241, 0.3); }
+
+/* Botão Retro com Animação da Home - Retornou ao tamanho original */
+.btn-main-action {
+  width: 100%;
+  background: var(--azul-arroxeado);
+  color: #fff;
+  padding: 15px;
+  border: 3px solid #000;
+  box-shadow: 0 5px 0 #3730a3;
+  font-weight: bold;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.btn-main-action:hover:not(:disabled) { background: var(--rosa-neon); box-shadow: 0 5px 0 #9d174d; transform: translateY(-2px); }
+.btn-main-action:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 2px 0 #000; }
+.btn-main-action:disabled { opacity: 0.5; cursor: not-allowed; animation: none; transform: none; box-shadow: none; }
+
+.btn-blink {
+  animation: arcade-pulse 1.5s infinite ease-in-out;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+@keyframes arcade-pulse {
+  0%, 100% { box-shadow: 0 4px 0 #3730a3, 0 0 5px rgba(99, 102, 241, 0.4); filter: brightness(1); }
+  50% { box-shadow: 0 4px 0 #3730a3, 0 0 20px rgba(99, 102, 241, 0.8); filter: brightness(1.2); }
+}
+
+.footer-link { text-align: center; margin-top: 20px; font-size: 0.9rem; color: #9ca3af; }
+.neon-link { color: var(--azul-arroxeado); font-weight: bold; text-decoration: none; }
+
+/* Alertas */
+.alert-arcade { padding: 12px; margin-bottom: 18px; border-radius: 6px; font-size: 0.9rem; border: 2px solid; text-align: center; }
+.alert-arcade.error { background: rgba(220, 38, 38, 0.2); border-color: #dc2626; color: #fca5a5; }
+
+/* Rodapé */
+.footer-arcade {
+  background-color: #05060a;
+  border-top: 3px solid var(--azul-arroxeado);
+  padding: 25px 15px; 
+  text-align: center;
+  margin-top: 30px;
+}
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+.social-icons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px; 
+  width: 100%;
+}
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px; 
+  height: 40px;
+  background-color: #fff;
+  color: #05060a;
+  border-radius: 50%;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+.social-btn svg { width: 20px; height: 20px; fill: currentColor; }
+.social-btn:hover {
+  background-color: var(--bg-card);
+  color: var(--azul-claro);
+  border-color: var(--azul-arroxeado);
+  box-shadow: 0 0 15px rgba(99, 102, 241, 0.6);
+  transform: scale(1.1) translateY(-3px);
+}
+.footer-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+  margin-bottom: 10px; 
+  color: #9ca3af;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+.footer-links a { 
+  color: var(--texto-branco); 
+  text-decoration: none; 
+  transition: color 0.2s; 
+  margin: 0 8px; 
+}
+.footer-links a:hover { 
+  color: var(--azul-claro); 
+  text-shadow: 0 0 8px rgba(165, 180, 252, 0.4); 
+}
+.footer-credits {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 15px; 
+  color: #6b7280;
+  font-size: 0.75rem;
+  text-align: center;
+}
+.dev-credits { 
+  font-size: 0.6rem; 
+  margin-top: 5px; 
+  opacity: 0.6; 
+  text-transform: uppercase; 
+  letter-spacing: 1px; 
+  text-align: center;
+}
+
+/* Animações e Responsividade */
+.animate-fade-in-left { animation: fadeInLeft 0.8s ease-out; }
+.animate-fade-in-right { animation: fadeInRight 0.8s ease-out; }
+
+@keyframes fadeInLeft { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes fadeInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+
+.desktop-only { display: flex; gap: 15px; margin-top: 20px; }
+.floating-icon { font-size: 2.5rem; animation: float 3s ease-in-out infinite; }
+.delay-1 { animation-delay: 0s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.4s; }
+
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+@media (max-width: 850px) {
+  .main-content-split { flex-direction: column; text-align: center; gap: 20px; padding: 20px; }
+  .brand-section { align-items: center; text-align: center; max-width: 100%; }
+  
+  .arcade-logo { font-size: 1.5rem; }
+  .desktop-only { display: none; }
+  .login-card { padding: 20px; margin-top: 0; /* Remove a margem extra no celular */ }
 }

@@ -6,7 +6,7 @@ import { AuthService } from '../../services/auth.service';
 
 /**
  * @class RegisterComponent
- * @description Componente responsável por criar novas contas de utilizador.
+ * @description Componente de registo de utilizadores com layout responsivo side-by-side.
  */
 @Component({
   selector: 'app-register',
@@ -20,12 +20,10 @@ export class RegisterComponent {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
 
-  /** @description Formulário reativo de registo */
   registerForm: FormGroup;
-  /** @description Mensagem de erro retornada pela API */
   errorMessage = '';
-  /** @description Mensagem de sucesso ao concluir o registo */
   successMessage = '';
+  isLoading = false;
 
   constructor() {
     this.registerForm = this.fb.group({
@@ -36,12 +34,9 @@ export class RegisterComponent {
     });
   }
 
-  /**
-   * @description Processa o formulário de registo e interage com o AuthService.
-   * Se a conta for criada com sucesso, aguarda 2 segundos e envia para o Login.
-   */
   onSubmit(): void {
     if (this.registerForm.valid) {
+      this.isLoading = true;
       this.authService.register(this.registerForm.value).subscribe({
         next: () => {
           this.successMessage = 'Cadastro realizado! A redirecionar...';
@@ -52,12 +47,13 @@ export class RegisterComponent {
           }, 2000);
         },
         error: (err) => {
-          this.errorMessage = typeof err.error === 'string' 
-            ? err.error 
-            : 'Erro ao realizar o registo.';
+          this.errorMessage = typeof err.error === 'string' ? err.error : 'Erro ao realizar o registo.';
           this.successMessage = '';
+          this.isLoading = false;
         },
       });
+    } else {
+      this.registerForm.markAllAsTouched();
     }
   }
 }
