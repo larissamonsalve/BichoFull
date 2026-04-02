@@ -10,4 +10,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsername(String username);
 
     Optional<User> findByUsernameOrEmail(String username, String email);
+    Optional<User> findFirstByRole(com.lab.bichofull.model.Role role);
 }

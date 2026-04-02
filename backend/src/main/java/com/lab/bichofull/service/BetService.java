@@ -9,6 +9,9 @@ import com.lab.bichofull.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.lab.bichofull.dto.BetHistorySummaryDTO;
+import com.lab.bichofull.model.BetStatus;
+import java.math.BigDecimal;
 
 @Service
 @RequiredArgsConstructor
@@ -53,5 +56,26 @@ public class BetService {
 
         // Matemática do bicho: Divide a dezena por 4 e arredonda para cima
         return (int) Math.ceil(ten / 4.0);
+    }
+
+    //historico
+    public BetHistorySummaryDTO getUserHistorySummary(Long userId) {
+        long totalBets = betRepository.countByUserId(userId);
+        long wonBets = betRepository.countByUserIdAndStatus(userId, BetStatus.WINNER);
+        
+        double winRate = 0.0;
+        if (totalBets > 0) {
+            winRate = ((double) wonBets / totalBets) * 100.0;
+        }
+
+        BigDecimal totalWon = betRepository.sumWinningsByUserId(userId);
+        BigDecimal totalLost = betRepository.sumLossesByUserId(userId);
+
+        return new BetHistorySummaryDTO(
+            totalBets,
+            Math.round(winRate * 100.0) / 100.0, // Arredonda para 2 casas decimais
+            totalWon != null ? totalWon : BigDecimal.ZERO,
+            totalLost != null ? totalLost : BigDecimal.ZERO
+        );
     }
 }

@@ -1,0 +1,184 @@
+<div class="dashboard-wrapper relative">
+  
+  <header class="arcade-header-nav" role="banner">
+    <div class="nav-container">
+      <a routerLink="/dashboard" class="arcade-logo arcade-font">BichoFull</a>
+
+      <nav class="nav-links-desktop" role="navigation">
+        <a routerLink="/dashboard" class="nav-link">Apostar</a>
+        <a routerLink="/draws" class="nav-link">Sorteios</a>
+        <span class="nav-link active admin-badge">👑 Painel Admin</span>
+      </nav>
+
+      <div class="nav-user-info">
+        <button (click)="logout()" class="btn-logout" title="Sair do Sistema" type="button">
+          <span class="icon" aria-hidden="true">➡️</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-layout container admin-layout">
+    
+    <aside class="admin-sidebar">
+      
+      <section class="section-container action-card text-center">
+        <h3 class="arcade-font text-neon-green mb-4 title-with-icon">
+          <span>🎲</span> Sorteio Aleatório
+        </h3>
+        <p class="text-blue-light text-sm mb-4">Motor RNG</p>
+        <button class="btn-arcade btn-main-action w-full" 
+                (click)="doRandomDraw()" [disabled]="isProcessing()">
+          {{ isProcessing() ? 'PROCESSANDO...' : 'DISPARAR ROLETA' }}
+        </button>
+      </section>
+
+      <section class="section-container action-card-warning mt-4">
+        <h3 class="arcade-font text-warning mb-4 title-with-icon">
+          <span>⚠️</span> Sorteio Manual
+        </h3>
+
+        <form [formGroup]="customDrawForm" (ngSubmit)="doCustomDraw()" class="custom-draw-form">
+          <div class="form-group row-input">
+            <label for="firstPrize" class="arcade-font">1º Prêmio:</label>
+            <input id="firstPrize" type="text" formControlName="firstPrize" class="arcade-input text-center" maxlength="4" placeholder="0000">
+          </div>
+          
+          <div class="form-group row-input">
+            <label for="secondPrize" class="arcade-font">2º Prêmio:</label>
+            <input id="secondPrize" type="text" formControlName="secondPrize" class="arcade-input text-center" maxlength="4" placeholder="0000">
+          </div>
+          
+          <div class="form-group row-input">
+            <label for="thirdPrize" class="arcade-font">3º Prêmio:</label>
+            <input id="thirdPrize" type="text" formControlName="thirdPrize" class="arcade-input text-center" maxlength="4" placeholder="0000">
+          </div>
+          
+          <div class="form-group row-input">
+            <label for="fourthPrize" class="arcade-font">4º Prêmio:</label>
+            <input id="fourthPrize" type="text" formControlName="fourthPrize" class="arcade-input text-center" maxlength="4" placeholder="0000">
+          </div>
+          
+          <div class="form-group row-input">
+            <label for="fifthPrize" class="arcade-font">5º Prêmio:</label>
+            <input id="fifthPrize" type="text" formControlName="fifthPrize" class="arcade-input text-center" maxlength="4" placeholder="0000">
+          </div>
+
+          <button type="submit" class="btn-arcade btn-warning w-full mt-4" 
+                  [disabled]="customDrawForm.invalid || isProcessing()">
+            {{ isProcessing() ? 'SORTEANDO...' : 'DISPARAR' }}
+          </button>
+        </form>
+      </section>
+    </aside>
+
+    <section class="admin-main-content">
+      
+      <div class="section-container mb-4">
+        <h3 class="arcade-font text-neon-green mb-4 title-with-icon">
+          <span>🏆</span> Pagamentos Recentes (Vencedores)
+        </h3>
+        <div class="table-responsive">
+          <table class="arcade-table">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Jogador</th>
+                <th>Jogada</th>
+                <th>Valor / Modo</th>
+                <th>Lucro Pago</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (bet of winningBets(); track bet.id) {
+                <tr class="row-winner">
+                  <td class="text-blue-light">{{ bet.createdAt | date:'dd/MM HH:mm' }}</td>
+                  
+                  <td>
+                    <strong class="text-neon-green">@{{ bet.username }}</strong><br>
+                    <small class="text-blue-light" style="font-size: 0.6rem;">{{ bet.email }}</small>
+                  </td>
+                  
+                  <td>
+                    <div class="animal-info-wrapper">
+                      @if (getAnimalForBet(bet); as animal) {
+                        <img [src]="'assets/bichos/' + animal.imagePath" [alt]="animal.name" class="table-animal-img">
+                      }
+                      <div class="bet-details-text">
+                        <span class="badge-type">{{ bet.betType }}</span>
+                        <span class="arcade-font bet-number">{{ bet.betValue }}</span>
+                      </div>
+                    </div>
+                  </td>
+                  
+                  <td>
+                    <strong class="text-white">R$ {{ bet.wagerAmount | number:'1.2-2' }}</strong><br>
+                    <small class="text-blue-light">{{ bet.betMode }}</small>
+                  </td>
+
+                  <td class="text-neon-green font-bold" style="font-size: 1.1rem;">
+                    + R$ {{ bet.prizeWon | number:'1.2-2' }}
+                  </td>
+                </tr>
+              } @empty {
+                <tr><td colspan="5" class="text-center text-blue-light py-4">Nenhum ganhador registrado ultimamente.</td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="section-container">
+        <h3 class="arcade-font text-blue-light mb-4 title-with-icon">
+          <span>📜</span> APOSTAS (Tempo Real)
+        </h3>
+        <div class="table-responsive max-h-500">
+          <table class="arcade-table">
+            <thead>
+              <tr>
+                <th>Hash ID</th>
+                <th>Status</th>
+                <th>Jogador</th>
+                <th>Jogada</th>
+                <th>Risco</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (bet of allBets(); track bet.id) {
+                <tr>
+                  <td class="arcade-font text-blue-light" style="font-size: 0.6rem;">#{{ bet.id }}</td>
+                  <td>
+                    <span class="status-badge" [ngClass]="bet.status.toLowerCase()">
+                      {{ bet.status }}
+                    </span><br>
+                    <small class="text-blue-light" style="font-size: 0.65rem; margin-top: 5px; display: block;">
+                      {{ bet.createdAt | date:'dd/MM HH:mm' }}
+                    </small>
+                  </td>
+                  <td>
+                    <strong class="text-white">@{{ bet.username }}</strong>
+                  </td>
+                  <td>
+                     <div class="animal-info-wrapper">
+                      @if (getAnimalForBet(bet); as animal) {
+                        <img [src]="'assets/bichos/' + animal.imagePath" [alt]="animal.name" class="table-animal-img-small">
+                      }
+                      <div class="bet-details-text">
+                        <span class="arcade-font bet-number" style="font-size: 0.7rem;">{{ bet.betValue }}</span>
+                        <small class="text-blue-light">{{ bet.betType }}</small>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="font-bold text-white">R$ {{ bet.wagerAmount | number:'1.2-2' }}</td>
+                </tr>
+              } @empty {
+                <tr><td colspan="5" class="text-center text-blue-light py-4">Nenhuma transação no sistema.</td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+  </main>
+</div>

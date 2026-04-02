@@ -3,7 +3,7 @@ package com.lab.bichofull.model;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Table(name = "bets")
@@ -15,6 +15,10 @@ public class Bet {
     @ManyToOne(fetch = FetchType.LAZY) 
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "draw_id")
+    private Draw draw;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "bet_mode", nullable = false)
@@ -43,5 +47,5 @@ public class Bet {
     private BetStatus status = BetStatus.PENDING;
 
     @Column(name = "created_at", insertable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 }

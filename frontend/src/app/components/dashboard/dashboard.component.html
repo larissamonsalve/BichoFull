@@ -1,22 +1,28 @@
 <div class="dashboard-wrapper">
   <header class="arcade-header-nav" role="banner">
     <div class="nav-container">
-      <a routerLink="/" class="arcade-logo arcade-font">BichoFull</a>
+      <a (click)="logout()" (keydown.enter)="logout()" tabindex="0" class="arcade-logo arcade-font" role="button" aria-label="Sair do sistema">BichoFull</a>
 
       <nav class="nav-links-desktop" role="navigation">
         <a routerLink="/dashboard" class="nav-link active">Apostar</a>
+        <a routerLink="/draws" class="nav-link">Sorteios</a>
         <a routerLink="/history" class="nav-link">Histórico</a>
+
+        @if (isAdmin()) {
+          <a routerLink="/admin" class="nav-link text-neon-green nav-admin-badge">👑 Painel Admin</a>
+        }
       </nav>
 
       <div class="nav-user-info">
         <div class="nav-balance text-neon-green">
-          <span class="icon" aria-hidden="true">💼</span> R$ {{ wallet().balance | number:'1.2-2' }}
+          <span class="icon icon-pulse" aria-hidden="true">💼</span> R$ {{ wallet().balance | number:'1.2-2' }}
         </div>
         <span class="welcome-text">
           Olá, <strong class="user-name-highlight">{{ userName() }}</strong>
         </span>
         <button (click)="logout()" class="btn-logout" title="Sair" type="button">
           <span class="icon" aria-hidden="true">➡️</span>
+          <span class="logout-text">Sair</span>
         </button>
       </div>
     </div>
@@ -26,14 +32,18 @@
     <section class="animals-section section-container">
       <div class="section-header">
         <h2 class="arcade-font text-neon-indigo">Escolha um Animal</h2>
-        <p class="section-subtitle">Clique em um bicho para apostar no grupo</p>
+        <p class="section-subtitle">Clique num bicho para apostar no grupo</p>
       </div>
 
       <div class="animal-grid" role="list">
         @for (animal of animals(); track animal.groupNumber) {
           <div class="animal-card-dark" role="button" (click)="selectAnimal(animal)" (keydown.enter)="selectAnimal(animal)" tabindex="0">
             <span class="animal-group-badge arcade-font">{{ animal.groupNumber | number:'2.0' }}</span>
-            <img [src]="'assets/bichos/' + animal.imagePath" [alt]="animal.name" class="animal-icon">
+            
+            <div class="animal-img-wrapper">
+              <img [src]="'assets/bichos/' + animal.imagePath" [alt]="animal.name" class="animal-icon">
+            </div>
+            
             <span class="animal-name-dark arcade-font">{{ animal.name }}</span>
             <div class="animal-tens-dark">
               @for (ten of animal.tens; track ten) {
@@ -43,13 +53,49 @@
           </div>
         }
       </div>
+
+      <div class="form-group arcade-simulation-group">
+        <div class="arcade-buttons-container">
+          
+          <div class="arcade-joystick" 
+               title="Jogada Aleatória" 
+               role="button" 
+               tabindex="0" 
+               (click)="playRandomBet()" 
+               (keydown.enter)="playRandomBet()">
+            <div class="joystick-ball"></div>
+            <div class="joystick-stick"></div>
+            <div class="joystick-base"></div>
+            <span class="btn-text-arcade joystick-label">ALEATÓRIA</span>
+          </div>
+          
+          <div class="action-buttons-grid">
+            <button type="button" class="arcade-btn-physical arcade-btn-sys-blue" title="Meus Favoritos" (click)="playFavoritesBet()">
+              <span class="btn-text-arcade">MEUS<br>FAVS</span>
+            </button>
+            
+            <button type="button" class="arcade-btn-physical arcade-btn-sys-blue" title="Aposta Rápida: 5 Grupos" (click)="quick5GroupBet()">
+              <span class="btn-text-arcade">GRUPOS<br>CERCADA</span>
+            </button>
+            
+            <button type="button" class="arcade-btn-physical arcade-btn-sys-blue" title="Apostar em Dezenas" (click)="betOnTens()">
+              <span class="btn-text-arcade">SÓ<br>DEZENAS</span>
+            </button>
+            
+            <button type="button" class="arcade-btn-physical arcade-btn-sys-blue" title="Série da Sorte 7" (click)="lucky7SeriesBet()">
+              <span class="btn-text-arcade">SÉRIE<br>DA SORTE</span>
+            </button>
+          </div>
+
+        </div>
+      </div>
     </section>
 
     <aside class="sidebar-right">
       <section class="balance-card section-container" aria-labelledby="wallet-title">
         <div class="wallet-main-display">
           <div class="wallet-header-row">
-            <span class="icon-pulse" aria-hidden="true">💼</span>
+            <span class="icon icon-pulse" aria-hidden="true">💼</span>
             <h3 id="wallet-title" class="arcade-font">Sua Carteira</h3>
           </div>
                     
@@ -90,14 +136,25 @@
         </div>
 
         <div class="pending-bets-footer">
-          <div class="bets-count-tag arcade-font">
+          <a routerLink="/history" class="bets-count-tag arcade-font" title="Ver o seu histórico de apostas">
             {{ wallet().pendingBetsCount }} APOSTAS ATIVAS
-          </div>
+          </a>
         </div>
       </section>
 
       <section class="bet-panel section-container">
         <h3 class="arcade-font text-neon-indigo bet-panel-title">Fazer Aposta</h3>
+        
+        @if (selectedAnimal()) {
+          <div class="selected-animal-preview">
+            <img [src]="'assets/bichos/' + selectedAnimal()?.imagePath" [alt]="selectedAnimal()?.name" class="preview-icon">
+            <div class="preview-info">
+              <span class="arcade-font name">{{ selectedAnimal()?.name }}</span>
+              <span class="group">Grupo {{ selectedAnimal()?.groupNumber | number:'2.0' }}</span>
+            </div>
+          </div>
+        }
+        
         <form [formGroup]="betForm" (ngSubmit)="onSubmit()">
           <div class="bet-types-container-cards">
             <label class="radio-label-card">
@@ -142,7 +199,9 @@
 
           <div class="form-group">
             <label for="wagerAmount" class="label-small arcade-font text-blue-light">Valor (R$)</label>
-            <input id="wagerAmount" type="number" formControlName="wagerAmount" class="arcade-input">
+            <input id="wagerAmount" type="number" formControlName="wagerAmount" 
+                   class="arcade-input" min="0.01" step="0.01" placeholder="0.00"
+                   (keydown)="preventNegative($event)">
           </div>
 
           <div class="quick-values">
@@ -151,8 +210,17 @@
             }
           </div>
 
-          <button type="submit" class="btn-arcade btn-main-action btn-blink btn-full arcade-font" [disabled]="isLoading() || betForm.invalid">
-            {{ isLoading() ? 'Processando...' : 'Confirmar Aposta' }}
+          <div class="potential-winnings-card">
+            <div class="winnings-content">
+              <span class="winnings-label arcade-font">GANHO POTENCIAL</span>
+              <span class="winnings-value text-neon-green arcade-font">
+                R$ {{ potentialWinnings() | number:'1.2-2' }}
+              </span>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-arcade btn-main-action btn-blink btn-full arcade-font" [disabled]="isLoading() || betForm.invalid || betForm.value.wagerAmount <= 0">
+            {{ isLoading() ? 'A Processar...' : 'Confirmar Aposta' }}
           </button>
         </form>
       </section>
@@ -164,21 +232,16 @@
       <span class="tab-icon">🎯</span>
       <span class="tab-label">Apostar</span>
     </a>
+    <a routerLink="/draws" class="tab-item" routerLinkActive="active"> <span class="tab-icon">🎰</span>
+      <span class="tab-label">Sorteios</span>
+    </a>
     <a routerLink="/history" class="tab-item" routerLinkActive="active">
       <span class="tab-icon">📜</span>
       <span class="tab-label">Histórico</span>
     </a>
-    <a (click)="logout()" (keydown.enter)="logout()" class="tab-item" role="button" 
-   tabindex="0">
+    <a (click)="logout()" (keydown.enter)="logout()" class="tab-item" role="button" tabindex="0">
       <span class="tab-icon">🚪</span>
       <span class="tab-label">Sair</span>
     </a>
   </nav>
-
-  <footer class="footer-arcade" role="contentinfo">
-    <div class="footer-content">
-      <p class="footer-text">Simulador Educacional - Não envolve dinheiro real</p>
-      <p class="footer-text">BichoFull - Fins Educacionais</p>
-    </div>
-  </footer>
 </div>

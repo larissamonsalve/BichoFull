@@ -1,23 +1,30 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router'; 
+import { CommonModule } from '@angular/common'; 
 import { AuthService } from '../../services/auth.service';
-import { Router, RouterLink } from '@angular/router'; // Importado RouterLink
-import { CommonModule } from '@angular/common'; // Importado CommonModule
 
+/**
+ * @class RegisterComponent
+ * @description Componente responsável por criar novas contas de utilizador.
+ */
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, CommonModule], // Adicionados aqui
+  imports: [ReactiveFormsModule, RouterLink, CommonModule], 
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css'],
 })
 export class RegisterComponent {
-  private fb = inject(FormBuilder);
-  private authService = inject(AuthService);
-  private router = inject(Router);
+  private readonly fb = inject(FormBuilder);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
+  /** @description Formulário reativo de registo */
   registerForm: FormGroup;
+  /** @description Mensagem de erro retornada pela API */
   errorMessage = '';
+  /** @description Mensagem de sucesso ao concluir o registo */
   successMessage = '';
 
   constructor() {
@@ -29,11 +36,15 @@ export class RegisterComponent {
     });
   }
 
-  onSubmit() {
+  /**
+   * @description Processa o formulário de registo e interage com o AuthService.
+   * Se a conta for criada com sucesso, aguarda 2 segundos e envia para o Login.
+   */
+  onSubmit(): void {
     if (this.registerForm.valid) {
       this.authService.register(this.registerForm.value).subscribe({
         next: () => {
-          this.successMessage = 'Cadastro realizado! Redirecionando...';
+          this.successMessage = 'Cadastro realizado! A redirecionar...';
           this.errorMessage = '';
           this.registerForm.reset();
           setTimeout(() => {
@@ -41,7 +52,9 @@ export class RegisterComponent {
           }, 2000);
         },
         error: (err) => {
-          this.errorMessage = typeof err.error === 'string' ? err.error : 'Erro ao realizar cadastro.';
+          this.errorMessage = typeof err.error === 'string' 
+            ? err.error 
+            : 'Erro ao realizar o registo.';
           this.successMessage = '';
         },
       });

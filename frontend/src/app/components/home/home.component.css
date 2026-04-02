@@ -10,6 +10,9 @@
   --azul-claro: #a5b4fc;     /* Para detalhes e textos secundários */
   --texto-branco: #e0e7ff;   /* Branco levemente azulado para não ofuscar */
   
+  /* Adicionado para consistência com a Dashboard */
+  --font-arcade: 'Press Start 2P', cursive;
+  
   display: block;
   font-family: system-ui, -apple-system, sans-serif;
   background-color: var(--bg-page);
@@ -19,13 +22,13 @@
 }
 
 * {
-  box-sizing: border-box; /* IMPEDE QUE AS CAIXAS VAZEM OU QUEBREM O TAMANHO */
+  box-sizing: border-box; 
   margin: 0;
   padding: 0;
 }
 
-h1, h2, h3, .logo, .multiplier {
-  font-family: 'Press Start 2P', cursive;
+h1, h2, h3, .logo, .multiplier, .arcade-font {
+  font-family: var(--font-arcade) !important;
   text-transform: uppercase;
 }
 
@@ -71,9 +74,9 @@ h1, h2, h3, .logo, .multiplier {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 20px; /* Espaço entre os botões */
+  gap: 20px; 
   margin-top: 30px;
-  flex-wrap: wrap; /* Para não quebrar em telas muito pequenas */
+  flex-wrap: wrap; 
 }
 
 .btn-arcade {
@@ -91,7 +94,6 @@ h1, h2, h3, .logo, .multiplier {
   border: 3px solid #000;
 }
 
-/* BOTÃO PRINCIPAL: Comece Agora (Azul -> Rosa no Hover) */
 .btn-main-action {
   background-color: var(--azul-arroxeado);
   color: #fff;
@@ -99,13 +101,12 @@ h1, h2, h3, .logo, .multiplier {
 }
 
 .btn-main-action:hover {
-  background-color: #ff007f; /* MUDANÇA PARA ROSA NO MOUSE */
+  background-color: #ff007f; 
   border-color: #9d174d;
   box-shadow: 0 8px 15px rgba(255, 0, 127, 0.4), 0 8px 0 #9d174d;
   transform: scale(1.05) translateY(-4px);
 }
 
-/* BOTÃO SECUNDÁRIO: Já tenho conta (Azul Transparente) */
 .btn-already-have {
   background-color: transparent;
   color: var(--azul-claro);
@@ -121,16 +122,14 @@ h1, h2, h3, .logo, .multiplier {
   box-shadow: 0 8px 0 #2e3247;
 }
 
-/* ESTADO DE CLIQUE */
 .btn-arcade:active {
   transform: translateY(4px) scale(0.98) !important;
   box-shadow: 0 2px 0 #000 !important;
 }
 
-/* ANIMAÇÃO BRUTAL DE PISCAR (Aplicada ao azul agora) */
 @keyframes arcade-brutal-blink {
   0% { opacity: 1; }
-  50% { opacity: 0.3; } /* Mudei para 0.3 para não sumir 100%, facilitando a leitura */
+  50% { opacity: 0.3; } 
   100% { opacity: 1; }
 }
 
@@ -173,56 +172,26 @@ h1, h2, h3, .logo, .multiplier {
   width: 100%;
 }
 
-.animal-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 15px;
-  width: 100%;
-}
-
 /* CARDS INTERNOS */
 .card-item {
   background-color: var(--bg-page);
   border: 2px solid #2e3247;
   border-radius: 8px;
-  padding: 20px;
+  padding: 25px;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   width: 100%;
-  overflow: hidden; /* Impede vazamento visual */
-}
-
-/* Estilo específico para o Card de Animal */
-.card-item img { width: 60px; height: 60px; margin-bottom: 10px; image-rendering: pixelated;}
-.animal-name { font-weight: 800; font-size: 1.1rem; color: #fff; margin-bottom: 10px; text-transform: uppercase;}
-
-/* Container flexível para as dezenas nunca vazarem */
-.tens-list { 
-  display: flex; 
-  flex-wrap: wrap; /* A MÁGICA AQUI: quebra a linha se não couber */
-  justify-content: center; 
-  gap: 5px; 
-  width: 100%;
-}
-
-.ten-badge {
-  background-color: var(--azul-arroxeado);
-  color: #fff;
-  font-family: monospace; 
-  font-size: 0.9rem;
-  padding: 4px 6px;
-  border-radius: 4px;
-  font-weight: bold;
+  overflow: hidden; 
 }
 
 /* ==========================================================================
    COMO FUNCIONA & PRÊMIOS
    ========================================================================== */
 .feature-icon { font-size: 2.5rem; margin-bottom: 15px; }
-.card-item h3 { font-family: system-ui, sans-serif; font-size: 1.2rem; font-weight: bold; margin-bottom: 10px; color: var(--azul-claro);}
+.card-item h3 { font-family: var(--font-arcade); font-size: 0.8rem; font-weight: bold; margin-bottom: 15px; color: var(--azul-claro);}
 .card-item p { font-size: 0.95rem; color: #9ca3af; }
 
 .multiplier { font-size: 2rem; color: var(--azul-arroxeado); margin: 15px 0; text-shadow: 2px 2px 0 #000; }
@@ -240,7 +209,7 @@ h1, h2, h3, .logo, .multiplier {
 @media (max-width: 600px) {
   .hero h1 { font-size: 1.5rem; }
   .btn-arcade { width: 100%; }
-  .section-container { padding: 20px; } /* Reduz padding no celular para caber melhor */
+  .section-container { padding: 20px; } 
 }
 
 /* ==========================================================================
@@ -253,7 +222,6 @@ h1, h2, h3, .logo, .multiplier {
     filter: brightness(1);
   }
   50% {
-    /* No meio da animação, o botão "brilha" e a sombra neon expande */
     box-shadow: 0 4px 0 #4338ca, 0 0 20px rgba(99, 102, 241, 0.8);
     filter: brightness(1.2);
   }
@@ -265,11 +233,9 @@ h1, h2, h3, .logo, .multiplier {
 
 .btn-blink {
   animation: arcade-pulse 1.5s infinite ease-in-out;
-  /* Garante que o texto fique nítido durante o brilho */
   text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
 }
 
-/* Pausa a animação se o usuário preferir menos movimento (Acessibilidade) */
 @media (prefers-reduced-motion: reduce) {
   .btn-blink {
     animation: none;
@@ -282,9 +248,9 @@ h1, h2, h3, .logo, .multiplier {
 
 .final-call {
   display: flex;
-  justify-content: center; /* Centraliza horizontalmente */
-  align-items: center;     /* Centraliza verticalmente se houver altura fixa */
-  text-align: center;      /* Centraliza todas as linhas de texto */
+  justify-content: center; 
+  align-items: center;     
+  text-align: center;      
   padding: 80px 20px;
   background-color: var(--bg-card);
   border: 4px solid var(--azul-arroxeado);
@@ -292,7 +258,7 @@ h1, h2, h3, .logo, .multiplier {
 }
 
 .final-content {
-  max-width: 700px; /* Limita a largura para o texto não ficar esticado demais */
+  max-width: 700px; 
   margin: 0 auto;
 }
 
@@ -318,10 +284,9 @@ h1, h2, h3, .logo, .multiplier {
   width: 100%;
 }
 
-/* Reutilizando o pulsar dos botões */
 .btn-blink-final {
   animation: arcade-pulse-suave 2s infinite ease-in-out;
-  min-width: 280px; /* Garante que o botão tenha um bom tamanho */
+  min-width: 280px; 
 }
 
 @media (max-width: 768px) {

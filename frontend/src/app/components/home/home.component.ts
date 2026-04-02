@@ -1,15 +1,14 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { AnimalService, Animal } from '../../services/animal.service';
 
-interface Animal {
-  groupNumber: number;
-  name: string;
-  imagePath: string;
-  tens: string[];
-}
-
+/**
+ * @class HomeComponent
+ * @description Componente da página inicial (Landing Page).
+ * Apresenta o projeto e carrega uma amostra dos animais disponíveis.
+ */
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -18,15 +17,24 @@ interface Animal {
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-  private http = inject(HttpClient);
+  /** Injeção do serviço de animais para substituir a chamada HTTP hardcoded */
+  private readonly animalService = inject(AnimalService);
+  /** Referência para destruir inscrições automaticamente e evitar Memory Leaks */
+  private readonly destroyRef = inject(DestroyRef);
   
-  // Usando Signals para reatividade moderna
-  animals = signal<Animal[]>([]);
+  /** @description Signal reativo contendo a lista de animais carregados */
+  readonly animals = signal<Animal[]>([]);
 
+  /**
+   * @description Hook de ciclo de vida executado na inicialização.
+   * Busca a lista de animais e previne vazamento de memória com takeUntilDestroyed.
+   */
   ngOnInit(): void {
-    this.http.get<Animal[]>('http://localhost:8080/api/animals').subscribe({
+    this.animalService.getAnimals().pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
       next: (data) => this.animals.set(data),
-      error: (err) => console.error('Erro ao carregar animais', err)
+      error: (err) => console.error('Erro ao carregar animais:', err)
     });
   }
 }
