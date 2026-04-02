@@ -1,6 +1,7 @@
 package com.lab.bichofull.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lab.bichofull.BaseIntegrationTest;
 import com.lab.bichofull.dto.LoginDTO;
 import com.lab.bichofull.dto.UserRegistrationDTO;
 import com.lab.bichofull.model.Role;
@@ -31,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @Transactional
 @AutoConfigureMockMvc
-class AuthControllerTest {
+class AuthControllerTest extends BaseIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -48,7 +49,6 @@ class AuthControllerTest {
     @Test
     @DisplayName("Deve autenticar usuário e retornar token 200 OK")
     void deveFazerLoginComSucesso() throws Exception {
-        // Criando usuário de teste no banco H2 (ou MySQL do CI)
         User user = User.builder()
                 .name("Teste")
                 .username("testeuser")
@@ -72,7 +72,6 @@ class AuthControllerTest {
     @Test
     @DisplayName("Deve registrar um usuário com sucesso")
     void shouldRegisterUserSuccessfully() throws Exception {
-        // Dado (Given)
         UserRegistrationDTO dto = new UserRegistrationDTO(
                 "Larissa Silva",
                 "larissa_software",
@@ -80,7 +79,6 @@ class AuthControllerTest {
                 "senha123"
         );
 
-        // Quando (When) & Então (Then)
         mockMvc.perform(post("/api/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto)))
@@ -91,17 +89,14 @@ class AuthControllerTest {
     @Test
     @DisplayName("Não deve permitir registro com e-mail duplicado")
     void shouldNotRegisterDuplicateEmail() throws Exception {
-        // Dado (Given)
         UserRegistrationDTO dto = new UserRegistrationDTO(
                 "Teste", "user1", "duplicado@email.com", "123456"
         );
         
-        // Primeiro registro
         mockMvc.perform(post("/api/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto)));
 
-        // Quando (When) - Segunda tentativa com mesmo e-mail
         mockMvc.perform(post("/api/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto)))
@@ -112,7 +107,6 @@ class AuthControllerTest {
     @Test
     @DisplayName("Não deve permitir registro com senha menor que 6 caracteres")
     void shouldNotRegisterWithShortPassword() throws Exception {
-        // Dado um DTO com senha inválida (apenas 5 caracteres) [cite: 61]
         UserRegistrationDTO dto = new UserRegistrationDTO(
                 "Teste Senha",
                 "user_senha",
@@ -120,12 +114,9 @@ class AuthControllerTest {
                 "12345" 
         );
 
-        // Quando enviamos a requisição, o Bean Validation deve barrar [cite: 32, 43]
         mockMvc.perform(post("/api/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isBadRequest());
-                // Nota: O Spring retorna 400 Bad Request automaticamente 
-                // quando as anotações @Valid falham[cite: 32].
     }
 }
