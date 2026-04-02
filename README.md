@@ -2,7 +2,7 @@
 
   
 
-O **BichoFull** é uma plataforma de entretenimento que simula a mecânica do tradicional Jogo do Bicho brasileiro utilizando um sistema de **fichas virtuais**. O projeto foi desenvolvido seguindo padrões de engenharia de software, com uma interface temática inspirada em máquinas de fliperama (Arcade/Retro).
+O **BichoFull** é uma plataforma que simula a mecânica do tradicional Jogo do Bicho brasileiro utilizando um sistema de **fichas virtuais**. O projeto foi desenvolvido seguindo padrões de engenharia de software, com uma interface temática inspirada em máquinas de fliperama (Arcade/Retro).
 
   
 
@@ -16,7 +16,6 @@ O **BichoFull** é uma plataforma de entretenimento que simula a mecânica do tr
 
 | Home Page | Dashboard de Apostas | Roleta de Sorteios |
 
-| :--- | :--- | :--- |
 
 | ![Home](docs/screenshots/home.png) | ![Dashboard](docs/screenshots/dashboard.png) | ![Sorteio](docs/screenshots/draws.png) |
 
@@ -70,10 +69,6 @@ O sistema foi construído sobre uma **Arquitetura em Camadas (Layered Architectu
 
 ### **Categorias e Multiplicadores**
 
-| Tipo | Regra de Vitória | Multiplicador |
-
-| :--- | :--- | :--- |
-
 | **Grupo** | Acerte o grupo do animal (1-25) | **18x** |
 
 | **Dezena** | Acerte os 2 últimos dígitos do prêmio | **60x** |
@@ -112,47 +107,53 @@ O sistema foi construído sobre uma **Arquitetura em Camadas (Layered Architectu
 
   
 
+
 **Banco de Dados (Docker):**
 
-Na raiz do projeto, execute o comando para subir o container do MySQL:
+  Na raiz do projeto, execute o comando para subir o container do MySQL:
 
-```bash
+  ```bash
 
-docker-compose  up  -d db
-```
-*O sistema criará o banco `db_bichofull`  automaticamente.*
+  docker-compose  up  -d db
+  ```
+  *O sistema criará o banco `db_bichofull`  automaticamente.*
   
+
 **Backend (Java/Maven):**
 
-Navegue  até  a  pasta  `backend`.  
-```bash
-cd backend
-```
-Digite o comando abaixo, nele o  Maven  baixará  o  Spring  Security,  JPA,  Driver  MySQL,  Flyway,  JJWT  e  Lombok:
-```bash
-./mvnw clean install
-```
-Depois de baixado, digite para iniciar o spring-boot:
-```bash
-./mvnw spring-boot:run
-```
+  Navegue  até  a  pasta  `backend`.  
+  ```bash
+  cd backend
+  ```
+  Digite o comando abaixo, nele o  Maven  baixará  o  Spring  Security,  JPA,  Driver  MySQL,  Flyway,  JJWT  e  Lombok:
+  ```bash
+  ./mvnw clean install
+  ```
+  Depois de baixado, digite para iniciar o spring-boot:
+  ```bash
+  ./mvnw spring-boot:run
+  ```
+
 
 **Frontend (Angular/Node):**
 
-Navegue até a pasta `frontend`. 
-```bash
-cd frontend 
-```
-O comando `install` baixará o Angular CLI, Tailwind CSS e bibliotecas RxJS:
-```bash
-npm install
-```
-E por fim, para executar o sistema:
-```bash
-npm start
-```
+  Navegue até a pasta `frontend`. 
+  ```bash
+  cd frontend 
+  ```
+  O comando `install` baixará o Angular CLI, Tailwind CSS e bibliotecas RxJS:
+  ```bash
+  npm install
+  ```
+  E por fim, para executar o sistema:
+  ```bash
+  npm start
+  ```
+
+
 ### **3. Acesso ao sistema**
 **Frontend:** `http://localhost:4200`
+
 **Backend API:** `http://localhost:8080`
 
 ### **4. Suíte de Testes**
