@@ -3,7 +3,7 @@ package com.lab.bichofull.model;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Table(name = "users")
@@ -31,8 +31,8 @@ public class User {
     @Column(nullable = false)
     private BigDecimal balance;
 
-    @Column(name = "created_at", insertable = false, updatable = false)
-    private LocalDateTime createdAt;
+   @Column(name = "created_at", insertable = false, updatable = false)
+    private Instant createdAt;
 
     // PREVENÇÃO DE CORRIDA: O Hibernate usa essa versão para impedir que
     // duas transações modifiquem o saldo exatamente no mesmo milissegundo.

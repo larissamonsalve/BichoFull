@@ -1,8 +1,9 @@
-// main/java/com/lab/bichofull/repository/BetRepository.java
 package com.lab.bichofull.repository;
 
 import com.lab.bichofull.model.Bet;
 import com.lab.bichofull.model.BetStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -14,6 +15,10 @@ import java.util.List;
 public interface BetRepository extends JpaRepository<Bet, Long> {
     
     List<Bet> findByUserIdOrderByCreatedAtDesc(Long userId);
+
+    Page<Bet> findByUserIdOrderByCreatedAtDesc(Long userId, Pageable pageable);
+
+    List<Bet> findByStatus(BetStatus status);
 
     // Soma os prêmios ganhos
     @Query("SELECT SUM(b.prizeWon) FROM Bet b WHERE b.user.id = :userId AND b.status = 'WINNER'")
@@ -29,4 +34,10 @@ public interface BetRepository extends JpaRepository<Bet, Long> {
 
     // Conta quantas apostas estão pendentes
     long countByUserIdAndStatus(Long userId, BetStatus status);
+
+    //Conta total de apostas do usuário
+    long countByUserId(Long userId);
+
+    //Busca todas as apostas ordenadas pelas mais recentes - ADMIN
+    List<Bet> findAllByOrderByCreatedAtDesc();
 }

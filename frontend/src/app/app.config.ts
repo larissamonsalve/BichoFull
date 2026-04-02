@@ -1,18 +1,19 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
-
-// 1. Mude as importações do HttpClient
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-// 2. Importe a FUNÇÃO interceptor (não a classe)
 import { authInterceptor } from './interceptors/auth.interceptor';
 
+/**
+ * @description Ficheiro de configuração global da aplicação (Bootstrap).
+ * Fornece os serviços vitais, as rotas e configura o cliente HTTP com interceptores.
+ */
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     
-    // 3. Configure o HttpClient para usar Interceptors Funcionais
+    // Configura o HttpClient para anexar o JWT através do interceptor funcional
     provideHttpClient(
       withInterceptors([authInterceptor])
     ),

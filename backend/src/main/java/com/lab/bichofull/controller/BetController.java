@@ -1,19 +1,20 @@
-// main/java/com/lab/bichofull/controller/BetController.java
 package com.lab.bichofull.controller;
 
 import com.lab.bichofull.dto.BetDTO;
-import com.lab.bichofull.model.Bet;
+import com.lab.bichofull.dto.BetResponseDTO;
+import com.lab.bichofull.dto.BetHistorySummaryDTO;
 import com.lab.bichofull.model.User;
 import com.lab.bichofull.repository.BetRepository;
 import com.lab.bichofull.service.BetService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:4200") // Permite chamadas do Angular
 @RestController
@@ -43,13 +44,33 @@ public class BetController {
     }
 
     @GetMapping("/history")
-    public ResponseEntity<List<Bet>> getBetHistory() {
-        // Recupera o utilizador autenticado
+    public ResponseEntity<Page<BetResponseDTO>> getBetHistory(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        
         User authenticatedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Pageable pageable = PageRequest.of(page, size);
         
-        // Retorna a lista de apostas ordenadas da mais recente para a mais antiga
-        List<Bet> history = betRepository.findByUserIdOrderByCreatedAtDesc(authenticatedUser.getId());
+        Page<BetResponseDTO> historyPage = betRepository.findByUserIdOrderByCreatedAtDesc(authenticatedUser.getId(), pageable)
+            .map(bet -> new BetResponseDTO(
+                bet.getId(),
+                bet.getUser().getUsername(),
+                bet.getUser().getEmail(),
+                bet.getBetType(),
+                bet.getBetMode(),
+                bet.getBetValue(),
+                bet.getWagerAmount(),
+                bet.getPrizeWon(),
+                bet.getStatus(),
+                bet.getCreatedAt()
+            ));
         
-        return ResponseEntity.ok(history);
+        return ResponseEntity.ok(historyPage);
+    }
+
+    @GetMapping("/history/summary")
+    public ResponseEntity<BetHistorySummaryDTO> getHistorySummary() {
+        User authenticatedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseEntity.ok(betService.getUserHistorySummary(authenticatedUser.getId()));
     }
 }

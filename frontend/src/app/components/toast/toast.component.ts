@@ -3,10 +3,9 @@ import { CommonModule } from '@angular/common';
 import { ToastService } from '../../services/toast.service';
 
 /**
- * Componente responsável por renderizar notificações flutuantes (Toasts) na interface.
- * Segue os padrões de acessibilidade WCAG, permitindo interação via teclado e leitores de tela.
- * * @example
- * <app-toast></app-toast>
+ * @class ToastComponent
+ * @description Componente responsável por renderizar notificações flutuantes (Toasts) na interface.
+ * Segue os padrões de acessibilidade WCAG, permitindo interação via teclado e leitores de ecrã.
  */
 @Component({
   selector: 'app-toast',
@@ -50,7 +49,7 @@ import { ToastService } from '../../services/toast.service';
       border-radius: 8px;
       color: #fff;
       font-weight: 600;
-      font-family: 'Press Start 2P', system-ui, sans-serif; /* Alinhado ao tema Arcade */
+      font-family: 'Press Start 2P', system-ui, sans-serif;
       font-size: 0.7rem;
       box-shadow: 0 10px 25px rgba(0,0,0,0.5);
       cursor: pointer;
@@ -62,7 +61,7 @@ import { ToastService } from '../../services/toast.service';
       animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
     }
 
-    /* Melhora o feedback visual para foco de teclado (Engenharia de UI) */
+    /* Feedback visual para navegação por teclado (Acessibilidade) */
     .toast-item:focus {
       outline: 3px solid #fff;
       outline-offset: 2px;
@@ -95,11 +94,12 @@ import { ToastService } from '../../services/toast.service';
   `]
 })
 export class ToastComponent {
-  /** Injeção do serviço de gerenciamento de estados dos alertas */
+  /** * Injeção protegida (readonly) do serviço de gestão de estados dos alertas 
+   */
   protected readonly toastService = inject(ToastService);
 
   /**
-   * Remove uma notificação específica pelo ID.
+   * Remove uma notificação específica com base no seu ID.
    * @param id Identificador único do toast.
    */
   removeToast(id: number): void {

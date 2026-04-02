@@ -1,0 +1,168 @@
+<div class="dashboard-wrapper relative">
+  @if (showConfetti()) {
+    <div class="confetti-container" aria-hidden="true">
+      @for (piece of confettiPieces; track piece) {
+        <div class="confetti" 
+             [style.left.%]="(piece * 1.5) % 100" 
+             [style.animation-delay.s]="(piece % 10) * 0.2"></div>
+      }
+    </div>
+  }
+
+  <header class="arcade-header-nav" role="banner">
+    <div class="nav-container">
+      <a (click)="goHomeAndLogout()" class="arcade-logo" role="button" tabindex="0" aria-label="Voltar para Início e Sair">
+        BichoFull
+      </a>
+
+      <nav class="nav-links-desktop" role="navigation">
+        <a routerLink="/dashboard" class="nav-link">Apostar</a>
+        <a routerLink="/draws" class="nav-link active">Sorteios</a>
+        <a routerLink="/history" class="nav-link">Histórico</a>
+
+        @if (isAdmin()) {
+          <a routerLink="/admin" class="nav-link text-neon-green admin-badge">👑 Painel Admin</a>
+        }
+      </nav>
+
+      <div class="nav-user-info">
+        <div class="nav-balance text-neon-green">
+          <span class="icon" aria-hidden="true">💼</span> R$ {{ wallet().balance | number:'1.2-2' }}
+        </div>
+        <span class="welcome-text">
+          Olá, <strong class="user-name-highlight">{{ userName() }}</strong>
+        </span>
+        <button (click)="logout()" class="btn-logout" title="Sair" type="button">
+          <span class="icon" aria-hidden="true">➡️</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-layout container flex-col">
+    <section class="section-container timer-section text-center">
+      <div class="timer-header-wrapper">
+        <span class="spinning-coin" aria-hidden="true">🪙</span>
+        <h2 class="arcade-font text-neon-indigo margin-0">CONTAGEM REGRESSIVA</h2>
+        <span class="spinning-coin" aria-hidden="true">🪙</span>
+      </div>
+      
+      <div class="clock-display arcade-font" [class.text-neon-green]="!isDrawing()" [class.blink-warning]="isDrawing()">
+        @if (!isDrawing()) {
+          <div class="time-unit">
+            <span class="number">{{ countdownObj().hours }}</span>
+            <span class="label">Horas</span>
+          </div>
+          <span class="separator">:</span>
+          <div class="time-unit">
+            <span class="number">{{ countdownObj().minutes }}</span>
+            <span class="label">Minutos</span>
+          </div>
+          <span class="separator">:</span>
+          <div class="time-unit">
+            <span class="number">{{ countdownObj().seconds }}</span>
+            <span class="label">Segundos</span>
+          </div>
+        } @else {
+          <span class="drawing-text text-neon-green">SORTEANDO!</span>
+        }
+      </div>
+
+      @if (!isDrawing()) {
+        <p class="next-draw-text insert-coin-blink text-blue-light">▶ Próximo sorteio às {{ nextDrawHour() }}:00h ◀</p>
+      }
+    </section>
+
+    <section class="section-container last-draw-section relative">
+      <div class="crt-scanline-overlay" aria-hidden="true"></div> <h3 class="arcade-font title-center z-index-content">🕹️ ÚLTIMO RESULTADO</h3>
+      
+      <div class="slot-machine-grid z-index-content">
+        @for (prize of (isDrawing() ? slotNumbers() : getPrizesArray(latestDraw())); track $index) {
+          <div class="slot-column" [class.spinning]="isDrawing()">
+            <div class="prize-label arcade-font">{{ $index + 1 }}º PRÊMIO</div>
+            
+            <div class="slot-window">
+              <span class="slot-number arcade-font">{{ prize }}</span>
+            </div>
+            
+            <div class="animal-result" [class.hidden]="isDrawing()">
+              @if (getAnimalFromPrize(prize); as animal) {
+                <img [src]="'assets/bichos/' + animal.imagePath" [alt]="animal.name" class="result-animal-img">
+                <span class="result-animal-name arcade-font">{{ animal.name }}</span>
+                <span class="result-animal-group">Grupo {{ animal.groupNumber | number:'2.0' }}</span>
+              }
+            </div>
+          </div>
+        }
+      </div>
+      
+      @if (latestDraw() && !isDrawing()) {
+        <p class="draw-date-text z-index-content">Sorteio realizado em: {{ latestDraw()?.drawDate | date:'dd/MM/yyyy HH:mm:ss' }}</p>
+      }
+    </section>
+
+    <section class="section-container history-section">
+      <h3 class="arcade-font text-blue-light mb-4">📜 HISTÓRICO DE SORTEIOS</h3>
+      
+      <div class="history-list">
+        @for (draw of paginatedHistory(); track draw.id) {
+          <div class="history-card neon-hover">
+            <div class="history-header">
+              <span class="arcade-font">Concurso #{{ draw.id }}</span>
+              <span class="text-blue-light">{{ draw.drawDate | date:'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+            <div class="history-prizes">
+              @for (prize of getPrizesArray(draw); track $index) {
+                <div class="mini-prize">
+                  <span class="mini-pos">{{ $index + 1 }}º</span>
+                  <span class="mini-num arcade-font text-neon-green">{{ prize }}</span>
+                  @if (getAnimalFromPrize(prize); as animal) {
+                    <img [src]="'assets/bichos/' + animal.imagePath" [alt]="animal.name" class="history-animal-img">
+                    <span class="mini-animal">{{ animal.name }}</span>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        }
+        @empty {
+          <p class="text-center text-blue-light py-4">Nenhum sorteio anterior encontrado.</p>
+        }
+      </div>
+
+      @if (historyDraws().length > 0) {
+        <div class="pagination-controls">
+          <button class="btn-page" (click)="prevPage()" [disabled]="currentPage() === 1">Anterior</button>
+          <span class="page-info arcade-font">Página {{ currentPage() }} de {{ totalPages() }}</span>
+          <button class="btn-page" (click)="nextPage()" [disabled]="currentPage() >= totalPages()">Próxima</button>
+        </div>
+      }
+    </section>
+  </main>
+
+  <nav class="mobile-tab-bar">
+    <a routerLink="/dashboard" class="tab-item" routerLinkActive="active">
+      <span class="tab-icon">🎯</span>
+      <span class="tab-label">Apostar</span>
+    </a>
+    <a routerLink="/draws" class="tab-item" routerLinkActive="active"> 
+      <span class="tab-icon">🎰</span>
+      <span class="tab-label">Sorteios</span>
+    </a>
+    <a routerLink="/history" class="tab-item" routerLinkActive="active">
+      <span class="tab-icon">📜</span>
+      <span class="tab-label">Histórico</span>
+    </a>
+    <a (click)="goHomeAndLogout()" (keydown.enter)="goHomeAndLogout()" class="tab-item" role="button" tabindex="0">
+      <span class="tab-icon">🚪</span>
+      <span class="tab-label">Sair</span>
+    </a>
+  </nav>
+
+  <footer class="footer-arcade" role="contentinfo">
+    <div class="footer-content">
+      <p class="footer-text">Simulador Educacional - Não envolve dinheiro real</p>
+      <p class="footer-text">BichoFull</p>
+    </div>
+  </footer>
+</div>

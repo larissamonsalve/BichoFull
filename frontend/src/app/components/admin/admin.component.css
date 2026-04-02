@@ -1,0 +1,231 @@
+:host {
+  /* GARANTIA ABSOLUTA DO TEMA NEON / DARK */
+  --bg-page: #0b0c13;
+  --bg-card: #151726;
+  --azul-arroxeado: #6366f1;
+  --azul-claro: #a5b4fc;
+  --rosa-neon: #ff007f;
+  --texto-branco: #e0e7ff;
+  --verde-sucesso: #22c55e;
+  --vermelho-erro: #ef4444;
+  --font-arcade: 'Press Start 2P', cursive;
+
+  display: block;
+  min-height: 100vh;
+  background-color: var(--bg-page);
+  color: var(--texto-branco);
+  font-family: system-ui, sans-serif;
+  padding-bottom: 80px; 
+  overflow-x: hidden; 
+}
+
+* { box-sizing: border-box; }
+
+/* ==========================================================================
+   HEADER (Idêntico ao restante do sistema)
+   ========================================================================== */
+.arcade-header-nav {
+  background-color: var(--bg-card);
+  border-bottom: 3px solid var(--azul-arroxeado);
+  padding: 15px 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%; 
+}
+.nav-container { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+
+.arcade-logo { text-decoration: none; font-size: 1.2rem; color: var(--azul-arroxeado); text-shadow: 2px 2px 0 #000; text-transform: uppercase; }
+.nav-links-desktop { display: flex; gap: 20px; align-items: center;}
+.nav-link { color: #fff; text-decoration: none; font-size: 0.9rem; font-weight: 600; }
+.admin-badge { border: 1px dashed var(--verde-sucesso); color: var(--verde-sucesso); padding: 5px 10px; border-radius: 5px; background: rgba(34, 197, 94, 0.1); }
+
+.btn-logout { background: none; border: none; color: #fff; cursor: pointer; font-size: 1.2rem; transition: transform 0.2s; }
+.btn-logout:hover { transform: translateX(3px); color: var(--vermelho-erro); }
+
+/* ==========================================================================
+   LAYOUT
+   ========================================================================== */
+.admin-layout {
+  display: flex;
+  flex-direction: row;
+  gap: 25px;
+  max-width: 1400px;
+  margin: 20px auto;
+  padding: 0 20px;
+  width: 100%; 
+}
+.admin-sidebar { width: 360px; display: flex; flex-direction: column; flex-shrink: 0; }
+.admin-main-content { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 20px;}
+
+.section-container {
+  background-color: var(--bg-card);
+  border: 3px solid var(--azul-arroxeado);
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+  width: 100%; 
+}
+
+/* ==========================================================================
+   CARDS DE AÇÃO
+   ========================================================================== */
+.action-card { border-color: var(--verde-sucesso); }
+.action-card-warning { border-color: #ca8a04; }
+
+.title-with-icon { display: flex; align-items: center; justify-content: center; gap: 10px; }
+.text-sm { font-size: 0.8rem; }
+.text-center { text-align: center; }
+.mb-4 { margin-bottom: 20px; }
+.mt-4 { margin-top: 20px; }
+.w-full { width: 100%; }
+.text-white { color: #fff; }
+
+.btn-main-action {
+  background-color: var(--verde-sucesso);
+  color: #fff;
+  padding: 16px;
+  border: 3px solid #000;
+  box-shadow: 0 6px 0 #14532d;
+  font-family: var(--font-arcade);
+  font-size: 0.65rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+}
+.btn-main-action:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 0 #14532d; filter: brightness(1.2); }
+.btn-main-action:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); box-shadow: none;}
+
+.btn-warning {
+  background-color: #ca8a04;
+  color: #fff;
+  padding: 16px;
+  border: 3px solid #000;
+  box-shadow: 0 6px 0 #854d0e;
+  font-family: var(--font-arcade);
+  font-size: 0.65rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+}
+.btn-warning:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 0 #854d0e; filter: brightness(1.2); }
+.btn-warning:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); box-shadow: none;}
+
+/* FORMULÁRIO INJETADO ESCURO */
+.custom-draw-form .row-input {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #2e3247;
+}
+.custom-draw-form label { font-size: 0.6rem; color: #facc15; }
+
+.custom-draw-form .arcade-input { 
+  width: 120px; 
+  padding: 10px; 
+  font-size: 1.2rem; 
+  letter-spacing: 3px;
+  background-color: var(--bg-page) !important;
+  border: 2px solid #ca8a04 !important;
+  color: #fff !important;
+  border-radius: 6px;
+  outline: none;
+  font-family: system-ui, sans-serif;
+  font-weight: bold;
+}
+.custom-draw-form .arcade-input:focus { box-shadow: 0 0 10px rgba(202, 138, 4, 0.5); }
+
+/* ==========================================================================
+   TABELAS NEON (ZERO BRANCO)
+   ========================================================================== */
+.table-responsive { width: 100%; overflow-x: auto; border-radius: 8px; }
+.max-h-500 { max-height: 550px; overflow-y: auto; }
+
+/* Custom Scrollbar */
+.max-h-500::-webkit-scrollbar { width: 8px; }
+.max-h-500::-webkit-scrollbar-track { background: var(--bg-page); }
+.max-h-500::-webkit-scrollbar-thumb { background: var(--azul-arroxeado); border-radius: 4px; }
+
+.arcade-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  background-color: var(--bg-page); /* Garante fundo preto/azulado */
+  border: 2px solid #2e3247;
+}
+
+.arcade-table th {
+  background-color: #1e1b4b; /* Indigo Escuro */
+  color: var(--azul-claro);
+  padding: 15px;
+  text-align: left;
+  font-family: var(--font-arcade);
+  font-size: 0.6rem;
+  border-bottom: 3px solid var(--azul-arroxeado);
+  white-space: nowrap;
+}
+
+.arcade-table td {
+  padding: 15px;
+  border-bottom: 1px solid #1e293b;
+  color: #e2e8f0;
+  vertical-align: middle;
+}
+
+.arcade-table tr:hover { background-color: rgba(99, 102, 241, 0.1); }
+
+/* Destaca Ganhadores */
+.row-winner { background: linear-gradient(90deg, rgba(34,197,94,0.15) 0%, rgba(0,0,0,0) 100%); }
+.row-winner:hover { background: linear-gradient(90deg, rgba(34,197,94,0.25) 0%, rgba(0,0,0,0) 100%) !important; }
+
+/* Bloco da Foto do Animal na Tabela */
+.animal-info-wrapper { display: flex; align-items: center; gap: 12px; }
+.table-animal-img {
+  width: 45px; height: 45px; image-rendering: pixelated;
+  background: rgba(255,255,255,0.05); border-radius: 8px; padding: 3px; border: 1px solid #2e3247;
+}
+.table-animal-img-small {
+  width: 35px; height: 35px; image-rendering: pixelated;
+  background: rgba(255,255,255,0.05); border-radius: 6px; padding: 2px;
+}
+.bet-details-text { display: flex; flex-direction: column; gap: 5px; }
+.badge-type { font-size: 0.6rem; background: #2e3247; padding: 3px 6px; border-radius: 4px; display: inline-block; width: fit-content; color: var(--azul-claro); font-weight: bold;}
+.bet-number { color: #fff; font-size: 0.85rem; letter-spacing: 1px; }
+
+/* Status Labels */
+.status-badge {
+  padding: 4px 8px; border-radius: 4px; font-size: 0.65rem; font-weight: bold; font-family: var(--font-arcade); letter-spacing: 1px;
+}
+.status-badge.winner { background: #166534; color: #4ade80; border: 1px solid #22c55e;}
+.status-badge.loser { background: #7f1d1d; color: #f87171; border: 1px solid #ef4444;}
+.status-badge.pending { background: #854d0e; color: #fde047; border: 1px solid #eab308;}
+
+/* Cores de Texto Globais do Tema */
+.text-warning { color: #facc15; text-shadow: 0 0 8px rgba(250, 204, 21, 0.3); }
+.text-neon-green { color: var(--verde-sucesso); text-shadow: 0 0 8px rgba(34, 197, 94, 0.3); }
+.text-blue-light { color: var(--azul-claro); }
+.font-bold { font-weight: bold; }
+
+/* ==========================================================================
+   RESPONSIVIDADE (MOBILE)
+   ========================================================================== */
+@media (max-width: 1100px) {
+  .admin-layout { flex-direction: column; padding: 0 15px; }
+  .admin-sidebar { width: 100%; order: -1; flex-direction: row; gap: 15px; }
+  .action-card, .action-card-warning { flex: 1; min-width: 250px;}
+}
+
+@media (max-width: 768px) {
+  .nav-container { padding: 0 15px; }
+  .admin-sidebar { flex-direction: column; }
+  .action-card, .action-card-warning { width: 100%; margin-top: 0;}
+  .arcade-table th, .arcade-table td { padding: 10px; font-size: 0.8rem; }
+  .table-animal-img { width: 35px; height: 35px; }
+  .nav-links-desktop a.nav-link:not(.admin-badge) { display: none; }
+}

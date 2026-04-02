@@ -1,0 +1,170 @@
+<div class="dashboard-wrapper relative">
+  <header class="arcade-header-nav" role="banner">
+    <div class="nav-container">
+      <a (click)="goHomeAndLogout()" class="arcade-logo arcade-font" role="button" tabindex="0">BichoFull</a>
+      
+      <nav class="nav-links-desktop" role="navigation">
+        <a routerLink="/dashboard" class="nav-link">Apostar</a>
+        <a routerLink="/draws" class="nav-link">Sorteios</a>
+        <a routerLink="/history" class="nav-link active">Histórico</a>
+        @if (isAdmin) {
+          <a routerLink="/admin" class="nav-link text-neon-green admin-badge">👑 Painel Admin</a>
+        }
+      </nav>
+
+      <div class="nav-user-info">
+        <div class="nav-balance text-neon-green">
+          <span class="icon icon-pulse" aria-hidden="true">💼</span> R$ {{ wallet().balance | number:'1.2-2' }}
+        </div>
+        <span class="welcome-text">
+          Olá, <strong class="user-name-highlight">{{ userName() }}</strong>
+        </span>
+        <button (click)="goHomeAndLogout()" class="btn-logout" title="Sair" type="button">
+          <span class="icon" aria-hidden="true">➡️</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-layout container flex-col">
+    <div class="title-wrapper text-center mt-4 mb-4">
+      <h2 class="arcade-font text-neon-indigo">
+        <span class="scroll-icon" aria-hidden="true">📜</span> 
+        HISTÓRICO DE APOSTAS
+        <span class="scroll-icon" aria-hidden="true">📜</span>
+      </h2>
+      <p class="text-blue-light">Acompanhe seu desempenho e estatísticas</p>
+    </div>
+
+    @if (summary()) {
+      <div class="summary-grid">
+        <div class="summary-card animate-slide-in" style="animation-delay: 0.1s;">
+          <div class="summary-header">
+            <span class="summary-icon">🎟️</span>
+            <span class="summary-label">Total de Apostas</span>
+          </div>
+          <span class="summary-value arcade-font">{{ summary()?.totalBets }}</span>
+        </div>
+
+        <div class="summary-card animate-slide-in" style="animation-delay: 0.2s;">
+          <div class="summary-header">
+            <span class="summary-icon">🎯</span>
+            <span class="summary-label">Taxa de Acerto</span>
+          </div>
+          <span class="summary-value arcade-font">{{ summary()?.winRate }}%</span>
+        </div>
+
+        <div class="summary-card border-green animate-slide-in" style="animation-delay: 0.3s;">
+          <div class="summary-header">
+            <span class="summary-icon">🏆</span>
+            <span class="summary-label">Total Ganho</span>
+          </div>
+          <span class="summary-value text-neon-green arcade-font">R$ {{ summary()?.totalWon | number:'1.2-2' }}</span>
+        </div>
+
+        <div class="summary-card border-red animate-slide-in" style="animation-delay: 0.4s;">
+          <div class="summary-header">
+            <span class="summary-icon">💀</span>
+            <span class="summary-label">Total Perdido</span>
+          </div>
+          <span class="summary-value text-error arcade-font">R$ {{ summary()?.totalLost | number:'1.2-2' }}</span>
+        </div>
+      </div>
+    }
+
+    <section class="section-container animate-fade-in">
+      <h3 class="arcade-font text-blue-light mb-4 title-with-icon">
+        <span>📜</span> Suas Apostas
+      </h3>
+      
+      @if (bets().length === 0) {
+        <div class="empty-state text-center">
+          <span class="empty-icon" aria-hidden="true">🕹️</span>
+          <p class="text-blue-light mb-4 mt-4">Você ainda não fez nenhuma aposta.</p>
+          <button routerLink="/dashboard" class="btn-arcade btn-main-action btn-blink arcade-font">Fazer uma Aposta</button>
+        </div>
+      } @else {
+        <div class="history-list">
+          @for (bet of bets(); track bet.id; let i = $index) {
+            <div class="history-card neon-hover">
+              <div class="history-header">
+                <span class="arcade-font text-neon-indigo">Aposta #{{ totalElements() - (currentPage() * 10) - i }}</span>
+                <span class="text-blue-light">{{ bet.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+              </div>
+              
+              <div class="history-details">
+                <div class="detail-col animal-col">
+                  @if (getAnimalForBet(bet); as animal) {
+                    <div class="animal-img-wrapper">
+                      <img [src]="'assets/bichos/' + animal.imagePath" [alt]="animal.name" class="history-animal-img float-hover">
+                      <span class="mini-animal">{{ animal.name }}</span>
+                    </div>
+                  }
+                  <div class="animal-info-text">
+                    <span class="badge-type">{{ translateType(bet.betType) }}</span>
+                    <span class="arcade-font text-white">{{ bet.betValue }}</span>
+                  </div>
+                </div>
+                
+                <div class="detail-col">
+                  <span class="text-blue-light">Valor / Modo:</span>
+                  <span class="font-bold text-white">R$ {{ bet.wagerAmount | number:'1.2-2' }}</span>
+                  <small class="text-blue-light" style="font-size: 0.65rem;">{{ translateMode(bet.betMode) }}</small>
+                </div>
+
+                <div class="detail-col">
+                  <span class="text-blue-light">Status:</span>
+                  <span class="status-badge" [ngClass]="bet.status.toLowerCase()">{{ translateStatus(bet.status) }}</span>
+                </div>
+
+                <div class="detail-col text-right">
+                   @if (bet.status === 'WINNER') {
+                      <span class="text-neon-green font-bold">+ R$ {{ bet.prizeWon | number:'1.2-2' }}</span>
+                   } @else if (bet.status === 'LOSER') {
+                      <span class="text-error font-bold">- R$ {{ bet.wagerAmount | number:'1.2-2' }}</span>
+                   } @else {
+                      <span class="text-warning font-bold" style="color: #eab308;">Aguardando...</span>
+                   }
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+
+        @if (totalPages() > 1) {
+          <div class="pagination-controls">
+            <button class="btn-page" (click)="prevPage()" [disabled]="currentPage() === 0">Anterior</button>
+            <span class="page-info arcade-font">Página {{ currentPage() + 1 }} de {{ totalPages() }}</span>
+            <button class="btn-page" (click)="nextPage()" [disabled]="currentPage() >= totalPages() - 1">Próxima</button>
+          </div>
+        }
+      }
+    </section>
+  </main>
+
+  <nav class="mobile-tab-bar">
+    <a routerLink="/dashboard" class="tab-item" routerLinkActive="active">
+      <span class="tab-icon">🎯</span>
+      <span class="tab-label">Apostar</span>
+    </a>
+    <a routerLink="/draws" class="tab-item" routerLinkActive="active"> 
+      <span class="tab-icon">🎰</span>
+      <span class="tab-label">Sorteios</span>
+    </a>
+    <a routerLink="/history" class="tab-item" routerLinkActive="active">
+      <span class="tab-icon">📜</span>
+      <span class="tab-label">Histórico</span>
+    </a>
+    <a (click)="goHomeAndLogout()" (keydown.enter)="goHomeAndLogout()" class="tab-item" role="button" tabindex="0">
+      <span class="tab-icon">🚪</span>
+      <span class="tab-label">Sair</span>
+    </a>
+  </nav>
+
+  <footer class="footer-arcade" role="contentinfo">
+    <div class="footer-content">
+      <p class="footer-text">Simulador Educacional - Não envolve dinheiro real</p>
+      <p class="footer-text">BichoFull</p>
+    </div>
+  </footer>
+</div>
