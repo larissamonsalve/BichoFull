@@ -3,18 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
-/**
- * @description DTO contendo os dados básicos do perfil do usuário.
- */
+// Interface para os dados básicos do perfil do usuário
 export interface UserProfile {
   name: string;
   username: string;
   balance: number;
 }
 
-/**
- * @description DTO contendo as estatísticas completas da carteira do usuário.
- */
+// Interface para os detalhes financeiros e de apostas da carteira
 export interface WalletStats {
   balance: number;
   totalWon: number;
@@ -24,26 +20,19 @@ export interface WalletStats {
   pendingBetsCount: number;
 }
 
-/**
- * @description Serviço responsável pelas informações do usuário autenticado.
- */
+// Serviço que gerencia as informações do usuário logado
 @Injectable({ providedIn: 'root' })
 export class UserService {
+  // Injeção do cliente HTTP e definição da URL base da API
   private readonly http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiUrl}/users`;
 
-  /**
-   * Obtém as informações básicas do perfil logado.
-   * @returns Observable com os dados do perfil.
-   */
+  // Busca os dados de identificação do usuário autenticado
   getMe(): Observable<UserProfile> {
     return this.http.get<UserProfile>(`${this.apiUrl}/me`);
   }
   
-  /**
-   * Obtém os dados detalhados de saldo e estatísticas da carteira do usuário.
-   * @returns Observable com os status da carteira.
-   */
+  // Busca o saldo e as estatísticas financeiras detalhadas
   getWallet(): Observable<WalletStats> {
     return this.http.get<WalletStats>(`${this.apiUrl}/wallet`);
   }

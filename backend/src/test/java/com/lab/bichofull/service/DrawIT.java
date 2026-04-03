@@ -17,7 +17,7 @@ import java.math.BigDecimal;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-// O @Transactional em testes de integração dá rollback ao final, mantendo o banco do Docker limpo para o próximo teste
+// O @Transactional garante que as alterações no banco sejam revertidas após o teste
 @Transactional 
 class DrawIntegrationTest extends BaseIntegrationTest {
 
@@ -33,10 +33,13 @@ class DrawIntegrationTest extends BaseIntegrationTest {
     @Autowired
     private DrawRepository drawRepository;
 
+    /**
+     * Teste que valida o fluxo completo: criação de sorteio, processamento de ganhadores e atualização de saldos.
+     */
     @Test
     @DisplayName("Teste Fim-a-Fim: Deve realizar sorteio transacional, pagar aposta e salvar no MySQL")
     void fullTransactionalDrawExecution() {
-        // 1. Arrange: Insere registros REAIS no banco de dados (MySQL via Docker)
+        // 1. Arrange: Insere dados iniciais (Admin, Jogador e uma Aposta Pendente) no banco de dados
         User admin = userRepository.save(User.builder()
                 .name("O Dono da Banca")
                 .username("bicheiro_admin")
@@ -52,36 +55,38 @@ class DrawIntegrationTest extends BaseIntegrationTest {
                 .email("player_draw@bichofull.com")
                 .password("hash")
                 .role(Role.PLAYER)
-                .balance(new BigDecimal("500.00")) // Saldo inicial na conta
+                .balance(new BigDecimal("500.00"))
                 .build());
 
+        // Cria uma aposta na milhar "1313" que será premiada neste teste
         Bet pendingBet = betRepository.save(Bet.builder()
                 .user(player)
                 .betType(BetType.THOUSANDS)
                 .betMode(BetMode.SIMPLE)
-                .betValue("1313") // Apostou na milhar 1313 na cabeça
-                .animalGroup(4)   // Borboleta
+                .betValue("1313")
+                .animalGroup(4)
                 .wagerAmount(new BigDecimal("10.00"))
                 .status(BetStatus.PENDING)
                 .build());
 
-        // 2. Act: O Admin realiza um sorteio manipulado onde o 1º prêmio dá a milhar exata apostada
+        // 2. Act: O Admin realiza um sorteio customizado onde o primeiro prêmio coincide com a aposta
         CustomDrawDTO drawResult = new CustomDrawDTO("1313", "0000", "1111", "2222", "3333");
         Draw executedDraw = drawService.performCustomDraw(admin, drawResult);
 
-        // 3. Assert: Vamos buscar diretamente do banco para garantir que o @Transactional funcionou
+        // 3. Assert: Valida se as informações foram persistidas e processadas corretamente no banco
         
-        // Verifica se o Sorteio foi salvo
+        // Verifica se o registro do sorteio foi salvo
         assertThat(drawRepository.findById(executedDraw.getId())).isPresent();
 
-        // Verifica a Aposta
+        // Verifica se a aposta mudou para status WINNER e vinculou o sorteio
         Bet betFromDb = betRepository.findById(pendingBet.getId()).orElseThrow();
         assertThat(betFromDb.getStatus()).isEqualTo(BetStatus.WINNER);
-        assertThat(betFromDb.getDraw().getId()).isEqualTo(executedDraw.getId()); // Sorteio vinculado à aposta
-        // Ganho de Milhar Simples: 10 * 4000 = 40.000
+        assertThat(betFromDb.getDraw().getId()).isEqualTo(executedDraw.getId());
+        
+        // Valida o cálculo do prêmio (Milhar paga 4000 vezes o valor apostado)
         assertThat(betFromDb.getPrizeWon()).isEqualByComparingTo(new BigDecimal("40000.00"));
 
-        // Verifica o Saldo atualizado do Jogador transacionalmente no Banco (500 + 40000)
+        // Verifica se o saldo do jogador foi atualizado com o prêmio (500 iniciais + 40000 ganhos)
         User playerFromDb = userRepository.findById(player.getId()).orElseThrow();
         assertThat(playerFromDb.getBalance()).isEqualByComparingTo(new BigDecimal("40500.00"));
     }

@@ -1,0 +1,87 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw; /* Garante ocupação total da largura */
+  height: 100vh; /* Garante ocupação total da altura */
+  background: rgba(0, 0, 0, 0.9); /* Escureci um pouco mais para destacar o modal */
+  backdrop-filter: blur(8px); /* Blur levemente maior para foco */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  padding: 15px; /* Reduzi o padding lateral para telas pequenas */
+}
+
+.modal-card {
+  background-color: #151726;
+  border: 3px solid #6366f1;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 600px;
+  /* Responsividade Vertical Crítica: */
+  max-height: 90vh; /* Aumentei para ocupar melhor telas pequenas */
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 30px rgba(99, 102, 241, 0.4);
+  animation: modalIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative; /* Para controle interno */
+}
+
+.modal-header {
+  padding: 15px 20px;
+  border-bottom: 2px dashed #2e3247;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0; /* Impede que o header amasse no mobile */
+}
+
+.modal-body {
+  padding: 20px;
+  overflow-y: auto; /* Permite rolar apenas o texto se for muito longo */
+  color: #e0e7ff;
+  font-size: 0.95rem; /* Aumentei levemente para leitura no mobile */
+  line-height: 1.6;
+  /* Scrollbar customizada para o estilo Arcade */
+  scrollbar-width: thin;
+  scrollbar-color: #6366f1 #151726;
+}
+
+/* Media Query para telas muito pequenas (Mobile Antigo ou telas estreitas) */
+@media (max-width: 480px) {
+  .modal-card {
+    max-height: 95vh;
+    border-width: 2px; /* Borda mais fina para sobrar espaço */
+  }
+
+  .arcade-font {
+    font-size: 0.65rem; /* Texto do título menor para não quebrar */
+  }
+
+  .modal-body {
+    padding: 15px;
+    font-size: 0.85rem; /* Ajuste fino do texto */
+  }
+}
+
+.btn-close-arcade {
+  background: none;
+  border: none;
+  color: #ef4444;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 5px;
+  transition: transform 0.2s;
+}
+
+.btn-close-arcade:hover {
+  transform: scale(1.2);
+}
+
+.arcade-font { 
+  font-family: 'Press Start 2P', cursive; 
+  font-size: 0.8rem; 
+  line-height: 1.2;
+}

@@ -36,7 +36,7 @@
 
 .brand-section { flex: 1; max-width: 480px; text-align: left; }
 
-/* Logo - Retornou ao tamanho original de 1.5rem */
+/* Logo */
 .arcade-logo-link {
   text-decoration: none;
   display: inline-block;
@@ -68,7 +68,7 @@
   margin-top: 25px; /* <--- Move o formulário um pouquinho mais para baixo */
 }
 
-/* Titulo - Retornou ao tamanho original de 1rem */
+/* Titulo */
 .arcade-title { font-family: var(--font-arcade); font-size: 1rem; color: #fff; margin-bottom: 10px; text-align: center; }
 .login-instruction { color: var(--azul-claro); font-size: 0.9rem; margin-bottom: 25px; text-align: center; }
 
@@ -87,7 +87,7 @@
   text-align: left; 
 }
 
-/* Inputs - Retornou ao tamanho original */
+/* Inputs  */
 .arcade-input {
   width: 100%;
   max-width: 100%;
@@ -101,7 +101,7 @@
 }
 .arcade-input:focus { outline: none; border-color: var(--azul-arroxeado); box-shadow: 0 0 10px rgba(99, 102, 241, 0.3); }
 
-/* Botão Retro com Animação da Home - Retornou ao tamanho original */
+/* Botão Retro com Animação da Home  */
 .btn-main-action {
   width: 100%;
   background: var(--azul-arroxeado);

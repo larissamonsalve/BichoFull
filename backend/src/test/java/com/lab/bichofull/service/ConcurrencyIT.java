@@ -21,6 +21,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * Teste de integração para validar o controle de concorrência (Optimistic Locking).
+ * Garante que o sistema não permita que duas apostas simultâneas gastem o mesmo saldo.
+ */
 @SpringBootTest
 class ConcurrencyIntegrationTest extends BaseIntegrationTest {
 
@@ -33,7 +37,7 @@ class ConcurrencyIntegrationTest extends BaseIntegrationTest {
     @Test
     @DisplayName("Bloqueio de Concorrência: Deve impedir apostas simultâneas que excedam o saldo")
     void shouldPreventConcurrentBetsWithOptimisticLocking() throws InterruptedException {
-        // 1. Arrange
+        // 1. Arrange: Cria um usuário com saldo de 50.00
         User player = userRepository.saveAndFlush(User.builder()
                 .name("Flash")
                 .username("fast_clicker_v2")
@@ -43,28 +47,32 @@ class ConcurrencyIntegrationTest extends BaseIntegrationTest {
                 .balance(new BigDecimal("50.00"))
                 .build());
 
+        // Prepara uma aposta que consome todo o saldo (50.00)
         BetDTO betDTO = new BetDTO(BetType.GROUP, BetMode.SIMPLE, "10", new BigDecimal("50.00"));
 
-        int numberOfThreads = 2;
+        int numberOfThreads = 2; // Simula dois acessos ao mesmo tempo
         ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
-        CountDownLatch latch = new CountDownLatch(1); 
-        CountDownLatch doneLatch = new CountDownLatch(numberOfThreads); 
+        CountDownLatch latch = new CountDownLatch(1); // Controla a largada simultânea
+        CountDownLatch doneLatch = new CountDownLatch(numberOfThreads); // Controla a espera pelo fim
 
         AtomicInteger successfulBets = new AtomicInteger(0);
         AtomicInteger lockingFailures = new AtomicInteger(0);
 
-        // 2. Act
+        // 2. Act: Dispara duas threads tentando realizar a mesma aposta ao mesmo tempo
         for (int i = 0; i < numberOfThreads; i++) {
             executorService.execute(() -> {
                 try {
+                    // Cada thread busca sua própria instância do usuário no banco
                     User threadUser = userRepository.findById(player.getId()).orElseThrow();
                     
-                    latch.await(); 
+                    latch.await(); // Aguarda o sinal de largada para correrem juntas
                     
+                    // Tenta realizar a aposta
                     betService.placeBet(betDTO, threadUser);
                     
                     successfulBets.incrementAndGet();
                 } catch (ConcurrencyFailureException e) {
+                    // Captura o erro de trava otimista do Hibernate (@Version)
                     lockingFailures.incrementAndGet();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -74,16 +82,16 @@ class ConcurrencyIntegrationTest extends BaseIntegrationTest {
             });
         }
 
-        latch.countDown(); 
-        doneLatch.await(); 
+        latch.countDown(); // Dá a largada para as threads
+        doneLatch.await(); // Espera ambas terminarem
         executorService.shutdown();
 
-        // 3. Assert
-        assertThat(successfulBets.get()).isEqualTo(1); // Só uma transação sobrevive
-        assertThat(lockingFailures.get()).isEqualTo(1); // A outra morre batendo no escudo do banco
+        // 3. Assert: Valida se apenas uma aposta teve sucesso e a outra foi bloqueada
+        assertThat(successfulBets.get()).isEqualTo(1); // Apenas uma transação deve ser confirmada
+        assertThat(lockingFailures.get()).isEqualTo(1); // A outra deve falhar por conflito de versão (Optimistic Lock)
 
+        // Verifica se o saldo final é zero (apenas um débito de 50 ocorreu)
         User finalUser = userRepository.findById(player.getId()).orElseThrow();
         assertThat(finalUser.getBalance()).isEqualByComparingTo(BigDecimal.ZERO);
-        
     }
 }

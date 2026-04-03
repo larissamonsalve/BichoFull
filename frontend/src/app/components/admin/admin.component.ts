@@ -12,9 +12,7 @@ import { AnimalService, Animal } from '../../services/animal.service';
 
 /**
  * @class AdminComponent
- * @description Componente responsável pelo Painel de Administração.
- * Permite a visualização de todas as apostas com paginação, controle de sorteios aleatórios
- * e a injeção de resultados manipulados (customizados).
+ * @description Componente do Painel Administrativo para controle de sorteios e visualização de apostas.
  */
 @Component({
   selector: 'app-admin',
@@ -24,6 +22,7 @@ import { AnimalService, Animal } from '../../services/animal.service';
   styleUrls: ['./admin.component.css']
 })
 export class AdminComponent implements OnInit {
+  // Injeção de dependências e serviços
   private readonly fb = inject(FormBuilder);
   private readonly adminService = inject(AdminService);
   private readonly toastService = inject(ToastService);
@@ -32,64 +31,45 @@ export class AdminComponent implements OnInit {
   private readonly animalService = inject(AnimalService);
   private readonly destroyRef = inject(DestroyRef);
 
-  /** * @description Formulário reativo utilizado para inserir os 5 prêmios de um sorteio manual. 
-   */
+  // Formulário para entrada manual de prêmios
   customDrawForm!: FormGroup;
   
-  // --- Sinais de Dados Base ---
+  // --- Estados do Sistema (Signals) ---
 
-  /** * @description Signal que armazena o histórico completo de apostas de todos os usuários. 
-   */
+  // Lista de todas as apostas do sistema
   readonly allBets = signal<BetHistoryDTO[]>([]);
 
-  /** * @description Signal que armazena a lista de animais carregados do sistema. 
-   */
+  // Dicionário de animais carregados
   readonly animals = signal<Animal[]>([]);
 
-  /** * @description Signal que indica se o sistema está atualmente processando um sorteio. 
-   */
+  // Indica se um sorteio está em andamento para travar os botões
   readonly isProcessing = signal<boolean>(false);
   
-  /** * @description Computed Signal que filtra `allBets` para retornar apenas as apostas com status 'WINNER'. 
-   */
+  // Filtro reativo que retorna apenas apostas vencedoras
   readonly winningBetsAll = computed(() => this.allBets().filter(b => b.status === 'WINNER'));
 
-  // --- Estados de Paginação ---
-
-  /** * @description Quantidade de itens a serem exibidos por página nas tabelas. 
-   */
+  // --- Paginação da Tabela de Vencedores ---
   readonly itemsPerPage = 10;
-  
-  /** @description Signal que armazena a página atual da tabela de pagamentos (vencedores). */
   readonly winCurrentPage = signal<number>(0);
-
-  /** @description Computed Signal que calcula o total de páginas para a tabela de vencedores. */
   readonly winTotalPages = computed(() => Math.max(1, Math.ceil(this.winningBetsAll().length / this.itemsPerPage)));
-
-  /** @description Computed Signal que retorna apenas a fatia de vencedores correspondente à página atual. */
   readonly winningBetsPaginated = computed(() => {
     const start = this.winCurrentPage() * this.itemsPerPage;
     return this.winningBetsAll().slice(start, start + this.itemsPerPage);
   });
 
-  /** @description Signal que armazena a página atual da tabela de todas as apostas. */
+  // --- Paginação da Tabela Geral ---
   readonly allCurrentPage = signal<number>(0);
-
-  /** @description Computed Signal que calcula o total de páginas para a tabela de todas as apostas. */
   readonly allTotalPages = computed(() => Math.max(1, Math.ceil(this.allBets().length / this.itemsPerPage)));
-
-  /** @description Computed Signal que retorna apenas a fatia de apostas correspondente à página atual. */
   readonly allBetsPaginated = computed(() => {
     const start = this.allCurrentPage() * this.itemsPerPage;
     return this.allBets().slice(start, start + this.itemsPerPage);
   });
 
   /**
-   * @method ngOnInit
-   * @description Hook de ciclo de vida invocado ao inicializar o componente.
-   * Verifica permissões de administrador, inicializa formulários e busca os dados da API.
+   * Inicializa o componente verificando acesso e carregando dados base.
    */
   ngOnInit(): void {
+    // Segurança: se não for admin, redireciona para o dashboard
     if (!this.authService.isAdmin()) {
       this.toastService.show('Acesso Negado. Área restrita.', 'error');
       this.router.navigate(['/dashboard']);
@@ -102,8 +82,7 @@ export class AdminComponent implements OnInit {
   }
 
   /**
-   * @method initForm
-   * @description Inicializa o `customDrawForm` aplicando validações de formulário (apenas 4 dígitos numéricos).
+   * Cria o formulário reativo com validação de 4 dígitos para cada prêmio.
    */
   private initForm(): void {
     const pattern = /^[0-9]{4}$/;
@@ -117,8 +96,7 @@ export class AdminComponent implements OnInit {
   }
 
   /**
-   * @method loadAnimals
-   * @description Consome a API de animais e atualiza o signal `animals`.
+   * Carrega a lista de animais da API.
    */
   private loadAnimals(): void {
     this.animalService.getAnimals().pipe(
@@ -130,9 +108,7 @@ export class AdminComponent implements OnInit {
   }
 
   /**
-   * @method loadAllBets
-   * @description Consome a API para buscar todas as apostas já feitas no sistema.
-   * Reseta a paginação atual ao obter novos dados.
+   * Carrega todas as apostas realizadas no sistema (global).
    */
   loadAllBets(): void {
     this.adminService.getAllSystemBets().pipe(
@@ -148,10 +124,7 @@ export class AdminComponent implements OnInit {
   }
 
   /**
-   * @method getAnimalForBet
-   * @description Analisa a aposta para identificar qual animal foi jogado, seja por Grupo ou Dezena.
-   * @param {BetHistoryDTO} bet O objeto da aposta.
-   * @returns {Animal | undefined} O objeto Animal correspondente, ou undefined se não encontrar.
+   * Lógica para identificar qual animal pertence ao valor da aposta.
    */
   getAnimalForBet(bet: BetHistoryDTO): Animal | undefined {
     if (!bet || this.animals().length === 0) return undefined;
@@ -167,26 +140,14 @@ export class AdminComponent implements OnInit {
     return this.animals().find(a => a.groupNumber === group);
   }
 
-  // --- Controles de Paginação ---
-
-  /** @description Avança para a próxima página na tabela de vencedores. */
+  // --- Funções de navegação de páginas ---
   nextWinPage(): void { if (this.winCurrentPage() < this.winTotalPages() - 1) this.winCurrentPage.update(p => p + 1); }
-  /** @description Volta para a página anterior na tabela de vencedores. */
   prevWinPage(): void { if (this.winCurrentPage() > 0) this.winCurrentPage.update(p => p - 1); }
-
-  /** @description Avança para a próxima página na tabela de todas as apostas. */
   nextAllPage(): void { if (this.allCurrentPage() < this.allTotalPages() - 1) this.allCurrentPage.update(p => p + 1); }
-  /** @description Volta para a página anterior na tabela de todas as apostas. */
   prevAllPage(): void { if (this.allCurrentPage() > 0) this.allCurrentPage.update(p => p - 1); }
 
-  // --- Tradutores (Inglês -> Português) ---
+  // --- Tradutores de Termos da API ---
 
-  /**
-   * @method translateStatus
-   * @description Traduz o status da aposta vindo da API para português.
-   * @param {string} status Status original ('WINNER', 'LOSER', 'PENDING').
-   * @returns {string} Status traduzido.
-   */
   translateStatus(status: string): string {
     switch (status) {
       case 'WINNER': return 'Ganhou';
@@ -196,12 +157,6 @@ export class AdminComponent implements OnInit {
     }
   }
 
-  /**
-   * @method translateType
-   * @description Traduz o tipo de aposta vindo da API para português.
-   * @param {string} type Tipo original ('GROUP', 'TENS', 'THOUSANDS').
-   * @returns {string} Tipo traduzido.
-   */
   translateType(type: string): string {
     switch (type) {
       case 'GROUP': return 'Grupo';
@@ -211,21 +166,12 @@ export class AdminComponent implements OnInit {
     }
   }
 
-  /**
-   * @method translateMode
-   * @description Traduz a modalidade de aposta vindo da API para português.
-   * @param {string} mode Modo original ('SURROUNDED', 'SIMPLE').
-   * @returns {string} Modo traduzido.
-   */
   translateMode(mode: string): string {
     return mode === 'SURROUNDED' ? 'Cercada' : 'Simples';
   }
 
-  // --- Sorteios ---
-
   /**
-   * @method doRandomDraw
-   * @description Pede confirmação e aciona a geração de um sorteio com números aleatórios (RNG) via API.
+   * Dispara um sorteio aleatório pelo servidor.
    */
   doRandomDraw(): void {
     if(confirm('⚠️ DISPARAR ROLETA: Tem a certeza que deseja realizar um Sorteio Aleatório?')) {
@@ -247,8 +193,7 @@ export class AdminComponent implements OnInit {
   }
 
   /**
-   * @method doCustomDraw
-   * @description Pede confirmação e injeta os valores providenciados no `customDrawForm` como resultado final da roleta.
+   * Dispara um sorteio com números específicos definidos no formulário.
    */
   doCustomDraw(): void {
     if (this.customDrawForm.invalid) {
@@ -277,8 +222,7 @@ export class AdminComponent implements OnInit {
   }
 
   /**
-   * @method logout
-   * @description Destrói a sessão atual do administrador e redireciona para a página principal.
+   * Encerra a sessão administrativa.
    */
   logout(): void {
     this.authService.logout();

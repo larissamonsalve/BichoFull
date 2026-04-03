@@ -22,7 +22,6 @@ import { AnimalService, Animal } from '../../services/animal.service';
   styleUrls: ['./history.component.css']
 })
 export class HistoryComponent implements OnInit {
-  // Injeção de Serviços (Segura e Imutável)
   private readonly betService = inject(BetService);
   private readonly authService = inject(AuthService);
   private readonly userService = inject(UserService);
@@ -31,24 +30,26 @@ export class HistoryComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
 
-  // Estados do Utilizador
+  // Estados Reativos (Signals) para dados do Utilizador
   readonly userName = signal<string>('');
   readonly wallet = signal<WalletStats>({
     balance: 0, totalWon: 0, totalLost: 0, totalPending: 0, netProfit: 0, pendingBetsCount: 0
   });
 
-  // Estados do Histórico
+  // Estados Reativos (Signals) para o Histórico e Lista de Animais
   readonly summary = signal<BetHistorySummary | null>(null);
   readonly bets = signal<BetHistoryDTO[]>([]);
   readonly animals = signal<Animal[]>([]);
   
-  // Paginação
+  // Controle de Paginação
   readonly currentPage = signal<number>(0);
   readonly totalPages = signal<number>(0);
   readonly totalElements = signal<number>(0);
   
+  // Verifica se o utilizador atual é um administrador
   readonly isAdmin = this.authService.isAdmin();
 
+  // Ciclo de vida: Inicializa os dados ao abrir a tela
   ngOnInit(): void {
     this.loadUserProfile();
     this.loadAnimals();
@@ -56,9 +57,7 @@ export class HistoryComponent implements OnInit {
     this.loadBets();
   }
 
-  /**
-   * @description Carrega os dados do utilizador autenticado (Nome e Saldo).
-   */
+  // Carrega os dados do perfil (nome e carteira) do utilizador autenticado.
   private loadUserProfile(): void {
     if (!this.authService.isLoggedIn()) return;
     
@@ -70,37 +69,31 @@ export class HistoryComponent implements OnInit {
     });
   }
 
-  /**
-   * @description Encerra a sessão e retorna para a página principal.
-   */
+  //Executa o logout, limpa a sessão e redireciona para a página inicial.
+
   goHomeAndLogout(): void {
     this.authService.logout();
     this.toastService.show('Sessão encerrada com sucesso!', 'success');
     this.router.navigate(['/']);
   }
 
-  /**
-   * @description Carrega o dicionário de animais através do AnimalService.
-   */
+  //Busca a lista de animais do sistema para exibir as imagens no histórico.
+
   private loadAnimals(): void {
     this.animalService.getAnimals().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => this.animals.set(data)
     });
   }
 
-  /**
-   * @description Carrega os dados de resumo das estatísticas (Win Rate, Lucro, etc).
-   */
+  // Carrega o resumo estatístico das apostas (Total, Win Rate, Lucro/Perda).
   loadSummary(): void {
     this.betService.getHistorySummary().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => this.summary.set(data)
     });
   }
 
-  /**
-   * @description Carrega o histórico detalhado de apostas paginado (Alterado para 5 por página).
-   * @param page Índice da página que se pretende carregar.
-   */
+  //Carrega as apostas do utilizador de forma paginada (5 itens por página).
+  
   loadBets(page = 0): void {
     this.betService.getHistory(page, 5).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (response) => {
@@ -112,10 +105,7 @@ export class HistoryComponent implements OnInit {
     });
   }
 
-  /**
-   * @description Analisa a aposta e cruza os dados com o dicionário para retornar a imagem do animal.
-   * @param bet Objeto com a aposta efetuada.
-   */
+  //Identifica qual bicho pertence à aposta com base no valor jogado.
   getAnimalForBet(bet: BetHistoryDTO): Animal | undefined {
     if (!bet || this.animals().length === 0) return undefined;
     
@@ -130,7 +120,8 @@ export class HistoryComponent implements OnInit {
     return this.animals().find(a => a.groupNumber === group);
   }
 
-  // ----- Tradutores para UI -----
+  // ----- Métodos de Tradução para exibição na Interface (UI) -----
+
   translateMode(mode: string): string {
     return mode === 'SURROUNDED' ? 'Cercada' : 'Simples';
   }
@@ -153,7 +144,7 @@ export class HistoryComponent implements OnInit {
     }
   }
 
-  // ----- Ações de Paginação -----
+  // -----Funções de Controle da Paginação -----
   nextPage(): void {
     if (this.currentPage() < this.totalPages() - 1) {
       this.loadBets(this.currentPage() + 1);

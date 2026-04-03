@@ -1,11 +1,9 @@
--- 1. Criação da tabela principal de animais com o caminho da imagem
 CREATE TABLE animals (
     group_number INT PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
-    image_path VARCHAR(100) NOT NULL -- Ex: 'avestruz.png' [cite: 335]
+    image_path VARCHAR(100) NOT NULL
 );
 
--- 2. Tabela auxiliar para as 4 dezenas de cada animal (Regra de Negócio de 4 em 4) [cite: 42, 43]
 CREATE TABLE animal_tens (
     animal_group INT,
     ten VARCHAR(2) NOT NULL,
@@ -13,7 +11,6 @@ CREATE TABLE animal_tens (
     CONSTRAINT fk_animal_group FOREIGN KEY (animal_group) REFERENCES animals(group_number)
 );
 
--- 3. Inserção dos 25 animais com seus respectivos nomes e caminhos de imagem [cite: 44, 362]
 INSERT INTO animals (group_number, name, image_path) VALUES 
 (1, 'Avestruz', 'avestruz.png'), (2, 'Águia', 'aguia.png'), (3, 'Burro', 'burro.png'), 
 (4, 'Borboleta', 'borboleta.png'), (5, 'Cachorro', 'cachorro.png'), (6, 'Cabra', 'cabra.png'), 
@@ -25,7 +22,6 @@ INSERT INTO animals (group_number, name, image_path) VALUES
 (22, 'Tigre', 'tigre.png'), (23, 'Urso', 'urso.png'), (24, 'Veado', 'veado.png'), 
 (25, 'Vaca', 'vaca.png');
 
--- 4. Inserção das 100 dezenas distribuídas conforme a RN [cite: 44, 362]
 INSERT INTO animal_tens (animal_group, ten) VALUES
 (1, '01'), (1, '02'), (1, '03'), (1, '04'), (2, '05'), (2, '06'), (2, '07'), (2, '08'),
 (3, '09'), (3, '10'), (3, '11'), (3, '12'), (4, '13'), (4, '14'), (4, '15'), (4, '16'),
@@ -41,12 +37,7 @@ INSERT INTO animal_tens (animal_group, ten) VALUES
 (23, '89'), (23, '90'), (23, '91'), (23, '92'), (24, '93'), (24, '94'), (24, '95'), (24, '96'),
 (25, '97'), (25, '98'), (25, '99'), (25, '00');
 
--- 5. Atualização da tabela de apostas
 ALTER TABLE bets ADD COLUMN animal_group INT;
-
--- 6. REMOÇÃO da coluna antiga de nome para evitar redundância (Normalização)
 ALTER TABLE bets DROP COLUMN animal_name;
-
--- 7. Criação da Chave Estrangeira (FK)
 ALTER TABLE bets ADD CONSTRAINT fk_bet_animal 
     FOREIGN KEY (animal_group) REFERENCES animals(group_number);

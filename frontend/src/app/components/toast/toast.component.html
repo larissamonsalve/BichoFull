@@ -1,0 +1,19 @@
+<div class="toast-container" role="live" aria-live="polite">
+  
+  @for (toast of toastService.toasts(); track toast.id) {
+    <div 
+      class="toast-item" 
+      [ngClass]="toast.type"
+      role="button"
+      tabindex="0"
+      (click)="removeToast(toast.id)"
+      (keydown.enter)="removeToast(toast.id)"
+      (keydown.space)="removeToast(toast.id)"
+      [attr.aria-label]="'Fechar notificação: ' + toast.message">
+      
+      <span class="toast-content">{{ toast.message }}</span>
+      
+      <span class="close-hint" aria-hidden="true">×</span>
+    </div>
+  }
+</div>

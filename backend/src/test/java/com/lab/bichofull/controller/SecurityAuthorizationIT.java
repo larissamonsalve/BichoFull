@@ -54,13 +54,11 @@ class SecurityAuthorizationIT extends BaseIntegrationTest {
         CustomDrawDTO maliciousDto = new CustomDrawDTO("1111", "2222", "3333", "4444", "5555");
 
         // Act & Assert: Tenta acessar rota de admin com token de player
-        // Como você usou lógica customizada (requireAdmin) no controller, o Spring pode retornar 500 ou 403 dependendo da configuração de exception handler. 
-        // Validamos se a requisição é barrada e não retorna 200 OK.
         mockMvc.perform(post("/api/admin/draws/custom")
                 .header("Authorization", "Bearer " + playerToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(maliciousDto)))
-                .andExpect(status().is5xxServerError()); // Baseado no "throw new IllegalStateException" do AdminController
+                .andExpect(status().is5xxServerError());
     }
 
     @Test

@@ -1,7 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 
 /**
- * @description Interface para a estrutura da mensagem de notificação (Toast).
+ * Interface que define a estrutura de cada mensagem de alerta (Toast).
  */
 export interface ToastMessage {
   id: number;
@@ -10,34 +10,39 @@ export interface ToastMessage {
 }
 
 /**
- * @description Serviço para emissão de alertas flutuantes e notificações em tela.
+ * Serviço responsável por gerenciar a exibição de notificações temporárias no sistema.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root' // Disponibiliza o serviço globalmente na aplicação
 })
 export class ToastService {
-  /** Signal contendo a lista reativa de notificações ativas */
+  /** Signal que mantém a lista de notificações visíveis de forma reativa. */
   readonly toasts = signal<ToastMessage[]>([]);
+  
+  // Contador interno para gerar IDs únicos para cada mensagem.
   private counter = 0;
 
   /**
-   * Adiciona e exibe uma nova notificação em tela.
-   * @param message A mensagem que será exibida.
-   * @param type Tipo da notificação: 'success' (verde) ou 'error' (vermelho).
-   * @param durationMs Tempo em milissegundos para a notificação desaparecer (Padrão: 4000ms).
+   * Cria uma nova notificação e programa sua remoção automática após o tempo definido.
+   * @param message Texto a ser exibido.
+   * @param type Categoria do alerta: sucesso ou erro.
+   * @param durationMs Tempo de permanência na tela.
    */
   show(message: string, type: 'success' | 'error', durationMs = 4000): void {
     const id = this.counter++;
+    
+    // Adiciona o novo alerta ao array mantendo os anteriores.
     this.toasts.update(current => [...current, { id, message, type }]);
 
+    // Define o cronômetro para remover o alerta automaticamente.
     setTimeout(() => {
       this.remove(id);
     }, durationMs);
   }
 
   /**
-   * Remove imediatamente uma notificação baseada no ID fornecido.
-   * @param id Identificador da notificação.
+   * Remove uma notificação específica da lista usando o filtro por ID.
+   * @param id Identificador da notificação a ser excluída.
    */
   remove(id: number): void {
     this.toasts.update(current => current.filter(t => t.id !== id));
