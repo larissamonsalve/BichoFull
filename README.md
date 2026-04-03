@@ -2,7 +2,7 @@
 
   
 
-O **BichoFull** é uma plataforma de entretenimento que simula a mecânica do tradicional Jogo do Bicho brasileiro utilizando um sistema de **fichas virtuais**. O projeto foi desenvolvido seguindo padrões de engenharia de software, com uma interface temática inspirada em máquinas de fliperama (Arcade/Retro).
+O **BichoFull** é uma plataforma que simula a mecânica do tradicional Jogo do Bicho brasileiro utilizando um sistema de **fichas virtuais**. O projeto foi desenvolvido seguindo padrões de engenharia de software, com uma interface temática inspirada em máquinas de fliperama (Arcade/Retro).
 
   
 
@@ -14,12 +14,14 @@ O **BichoFull** é uma plataforma de entretenimento que simula a mecânica do tr
 
   
 
-| Home Page | Dashboard de Apostas | Roleta de Sorteios |
+| Home |  
+![Home](docs/screenshots/home.png)  
 
-| :--- | :--- | :--- |
+| Apostas |
+![Dashboard](docs/screenshots/dashboard.png) 
 
-| ![Home](docs/screenshots/home.png) | ![Dashboard](docs/screenshots/dashboard.png) | ![Sorteio](docs/screenshots/draws.png) |
-
+| Sorteios |
+![Sorteio](docs/screenshots/draws.png) 
   
 
 ---
@@ -49,7 +51,6 @@ O sistema foi construído sobre uma **Arquitetura em Camadas (Layered Architectu
 *  **Banco de Dados:** MySQL com controle de versão via **Flyway Migrations** (V1 a V5).
 
   
-
 ### **Frontend (Angular 18)**
 
 *  **Signals:** Gerenciamento de estado reativo para atualização em tempo real do saldo e mensagens.
@@ -58,7 +59,6 @@ O sistema foi construído sobre uma **Arquitetura em Camadas (Layered Architectu
 
 *  **Interceptors:** Anexação automática do token JWT em todas as requisições autenticadas.
 
-  
 
 ---
 
@@ -69,10 +69,6 @@ O sistema foi construído sobre uma **Arquitetura em Camadas (Layered Architectu
   
 
 ### **Categorias e Multiplicadores**
-
-| Tipo | Regra de Vitória | Multiplicador |
-
-| :--- | :--- | :--- |
 
 | **Grupo** | Acerte o grupo do animal (1-25) | **18x** |
 
@@ -92,6 +88,31 @@ O sistema foi construído sobre uma **Arquitetura em Camadas (Layered Architectu
 
 ---
 
+
+# ⚡ Principais Funcionalidades
+
+| Categoria        | Funcionalidade       | Descrição                                   |              
+| ---------------- | -------------------- | ------------------------------------------- | 
+| 👤 **Usuário** | Cadastro             | Criação de conta com nome, e-mail e senha   |               
+| 👤 **Usuário** | Login                | Autenticação segura via JWT                 |
+| 👤 **Usuário** | Saldo inicial        | R$ 1.000,00 em fichas para começar          |
+| 👤 **Usuário** | Carteira virtual     | Saldo atualizado em tempo real              |
+|                  |                      |                                             |
+| 🎲 **Apostas** | Tabela de animais    | Interface com os 25 grupos do jogo do bicho |
+| 🎲 **Apostas** | Aposta por Grupo     | Escolha um animal (1 a 25)                  |
+| 🎲 **Apostas** | Aposta por Dezena    | Escolha dois números (00 a 99)              |
+| 🎲 **Apostas** | Aposta por Milhar    | Escolha quatro números (0000 a 9999)        |
+| 🎲 **Apostas** | Aposta Cercada    | Pode ser sorteado em qialquer um dos 5 prêmios      |
+| 🎲 **Apostas** | Validação de saldo   | Impede apostas com saldo insuficiente       |
+|                  |                      |                                             |
+| 🏆 **Sorteios** | Sorteio automático   | Geração aleatória de 5 milhares             |
+| 🏆 **Sorteios** | Sorteio manual       | Admin pode simular sorteios                 |
+| 🏆 **Sorteios** | Cálculo de prêmios   | Grupo: 18x / Dezena: 60px / Milhar: 4000x | Cercada: Divisão do valor por 5
+|                  |                      |                                             |
+| 📊 **Histórico** | Histórico de apostas | Visualização das apostas realizadas         |
+| 📊 **Histórico** | Resultados           | Ganhos e perdas por aposta                  |
+
+---
   
 
 ## 🚀 Instalação e Execução (Passo a Passo)
@@ -108,51 +129,35 @@ O sistema foi construído sobre uma **Arquitetura em Camadas (Layered Architectu
 
   
 
-### **2. Configuração do Ambiente e Dependências**
+### **2. Execução**
 
   
+  Na raiz do projeto, execute o comando para subir os containers do MySQL e da aplicação:
 
-**Banco de Dados (Docker):**
+  ```bash
 
-Na raiz do projeto, execute o comando para subir o container do MySQL:
+  docker-compose  up  -d
+  ```
+  *O sistema criará o banco `db_bichofull` e `spring_bichofull` automaticamente.*
 
-```bash
 
-docker-compose  up  -d db
-```
-*O sistema criará o banco `db_bichofull`  automaticamente.*
-  
-**Backend (Java/Maven):**
+  Navegue até a pasta `frontend`. 
 
-Navegue  até  a  pasta  `backend`.  
-```bash
-cd backend
-```
-Digite o comando abaixo, nele o  Maven  baixará  o  Spring  Security,  JPA,  Driver  MySQL,  Flyway,  JJWT  e  Lombok:
-```bash
-./mvnw clean install
-```
-Depois de baixado, digite para iniciar o spring-boot:
-```bash
-./mvnw spring-boot:run
-```
+  ```bash
+  cd frontend 
+  ```
+  O comando `install` baixará o Angular CLI, Tailwind CSS e bibliotecas RxJS:
+  ```bash
+  npm install
+  ```
+  E por fim, para executar o sistema:
+  ```bash
+  npm start
+  ```
 
-**Frontend (Angular/Node):**
-
-Navegue até a pasta `frontend`. 
-```bash
-cd frontend 
-```
-O comando `install` baixará o Angular CLI, Tailwind CSS e bibliotecas RxJS:
-```bash
-npm install
-```
-E por fim, para executar o sistema:
-```bash
-npm start
-```
 ### **3. Acesso ao sistema**
 **Frontend:** `http://localhost:4200`
+
 **Backend API:** `http://localhost:8080`
 
 ### **4. Suíte de Testes**
@@ -186,6 +191,14 @@ Para executar os testes, dentro da pasta backend, digite:
 -   **SLint:** impede que o código tenha variáveis não utilizadas, obriga o uso de boas práticas do Angular 18 (como o uso de `Signals`) e mantém a consistência entre os componentes.
     
 -   **Prettier:** Focado na estética. Formata automaticamente as quebras de linha, o uso de aspas e a indentação toda vez que um arquivo é salvo no projeto, evitando conflitos de estilo no Git entre diferentes desenvolvedores.
+
+### **5. Documentação do Código - JSDoc**
+
+O frontend deste projeto utiliza o padrão JSDoc para documentar classes, métodos e propriedades nos arquivos TypeScript. Esta prática foi adotada para garantir que o sistema siga padrões profissionais de engenharia de software, oferecendo:
+
+-   **Manual Integrado:** Ao passar o mouse sobre qualquer função ou componente, o editor exibe uma descrição detalhada, parâmetros esperados e tipos de retorno, funcionando como um manual de instruções.
+
+-   **Tags Inteligentes:** Utiliza-se tags como @class, @method, @param e @description para estruturar a explicação de lógicas complexas, como o motor da roleta e os interceptores de segurança.
 
 
 ### ⚠️ **Este projeto é destinado exclusivamente para fins acadêmicos.**
