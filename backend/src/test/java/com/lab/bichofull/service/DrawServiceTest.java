@@ -22,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+// Configura o Mockito para testes unitários isolados
 @ExtendWith(MockitoExtension.class)
 class DrawServiceTest {
 
@@ -43,83 +44,84 @@ class DrawServiceTest {
     private User admin;
     private User player;
 
+    // Prepara o cenário básico antes de cada teste
     @BeforeEach
     void setUp() {
         admin = User.builder().id(1L).username("admin").role(Role.ADMIN).build();
         player = User.builder().id(2L).username("jogador").balance(new BigDecimal("1000.00")).build();
         
-        // Simula o salvamento do sorteio retornando ele mesmo
+        // Simula o salvamento do sorteio retornando o próprio objeto
         when(drawRepository.save(any(Draw.class))).thenAnswer(invocation -> invocation.getArgument(0));
     }
 
+    //Testa se uma aposta SIMPLES no GRUPO (Vaca) ganha 18x o valor quando sai no 1º prêmio.
     @Test
     @DisplayName("Deve calcular corretamente aposta SIMPLES no GRUPO (18x) - Vaca (00)")
     void shouldCalculateSimpleGroupBetWinner() {
-        // Arrange
+        // Arrange: Aposta de 10 reais no grupo 25 (Vaca)
         Bet bet = Bet.builder()
                 .user(player)
                 .betType(BetType.GROUP)
                 .betMode(BetMode.SIMPLE)
-                .animalGroup(25) // Grupo 25 = Vaca
-                .wagerAmount(new BigDecimal("10.00")) // Aposta 10 reais
+                .animalGroup(25) 
+                .wagerAmount(new BigDecimal("10.00"))
                 .status(BetStatus.PENDING)
                 .build();
 
         when(betRepository.findByStatus(BetStatus.PENDING)).thenReturn(List.of(bet));
 
-        // 1º prêmio final 00 (Vaca). Em aposta SIMPLE, só o 1º prêmio importa.
+        // Define sorteio onde o 1º prêmio termina em 00 (Vaca)
         CustomDrawDTO drawResult = new CustomDrawDTO("5600", "1234", "1234", "1234", "1234");
 
-        // Act
+        // Act: Processa o sorteio
         drawService.performCustomDraw(admin, drawResult);
 
-        // Assert
+        // Assert: Verifica se a aposta virou WINNER e pagou 180 (10 * 18)
         verify(betRepository).saveAll(betListCaptor.capture());
         Bet processedBet = betListCaptor.getValue().get(0);
 
         assertThat(processedBet.getStatus()).isEqualTo(BetStatus.WINNER);
-        // Ganho: 10 * 18 = 180
         assertThat(processedBet.getPrizeWon()).isEqualByComparingTo(new BigDecimal("180.00"));
-        // Saldo do jogador foi atualizado: 1000 + 180 = 1180
         assertThat(player.getBalance()).isEqualByComparingTo(new BigDecimal("1180.00"));
     }
 
+    //Testa se uma aposta CERCADA na DEZENA divide o valor por 5 e multiplica pelos acertos (3 vezes neste caso).
     @Test
     @DisplayName("Deve calcular corretamente aposta CERCADA na DEZENA (60x) com 3 acertos")
     void shouldCalculateSurroundedTensBetWithMultipleMatches() {
-        // Arrange
+        // Arrange: Aposta cercada de 50 reais (10 reais por prêmio) na dezena 42
         Bet bet = Bet.builder()
                 .user(player)
                 .betType(BetType.TENS)
                 .betMode(BetMode.SURROUNDED)
                 .betValue("42")
-                .wagerAmount(new BigDecimal("50.00")) // R$ 50 divididos por 5 = R$ 10 base
+                .wagerAmount(new BigDecimal("50.00"))
                 .status(BetStatus.PENDING)
                 .build();
 
         when(betRepository.findByStatus(BetStatus.PENDING)).thenReturn(List.of(bet));
 
-        // Saiu a dezena "42" no 2º, 3º e 5º prêmios.
+        // Sorteio onde a dezena 42 sai em 3 dos 5 prêmios
         CustomDrawDTO drawResult = new CustomDrawDTO("1111", "9942", "8842", "2222", "7742");
 
-        // Act
+        // Act: Executa o sorteio
         drawService.performCustomDraw(admin, drawResult);
 
-        // Assert
+        // Assert: Verifica ganho (10 base * 60 multiplicador * 3 acertos = 1800)
         verify(betRepository).saveAll(betListCaptor.capture());
         Bet processedBet = betListCaptor.getValue().get(0);
 
         assertThat(processedBet.getStatus()).isEqualTo(BetStatus.WINNER);
-        // Base = 50 / 5 = 10. Multiplicador = 60. Acertos = 3. 
-        // Winnings = 10 * 60 * 3 = 1800
         assertThat(processedBet.getPrizeWon()).isEqualByComparingTo(new BigDecimal("1800.00"));
         assertThat(player.getBalance()).isEqualByComparingTo(new BigDecimal("2800.00"));
     }
 
+    //Testa se o sistema marca como PERDEDORA uma aposta SIMPLES quando o número sai em outros prêmios, exceto no 1º.
+
     @Test
     @DisplayName("Deve processar como PERDEDORA aposta na MILHAR que não saiu na cabeça")
     void shouldMarkAsLoserWhenSimpleBetNotOnFirstPrize() {
-        // Arrange
+        // Arrange: Aposta simples na milhar 7777
         Bet bet = Bet.builder()
                 .user(player)
                 .betType(BetType.THOUSANDS)
@@ -131,19 +133,18 @@ class DrawServiceTest {
 
         when(betRepository.findByStatus(BetStatus.PENDING)).thenReturn(List.of(bet));
 
-        // Saiu 7777 no 2º prêmio, mas a aposta é SIMPLE (só olha o 1º prêmio)
+        // Sorteio onde 7777 sai no 2º prêmio, mas a aposta é apenas para o 1º
         CustomDrawDTO drawResult = new CustomDrawDTO("1234", "7777", "0000", "1111", "2222");
 
-        // Act
+        // Act: Processa o sorteio
         drawService.performCustomDraw(admin, drawResult);
 
-        // Assert
+        // Assert: Verifica se a aposta foi marcada como LOSER
         verify(betRepository).saveAll(betListCaptor.capture());
         Bet processedBet = betListCaptor.getValue().get(0);
 
         assertThat(processedBet.getStatus()).isEqualTo(BetStatus.LOSER);
         assertThat(processedBet.getPrizeWon()).isEqualByComparingTo(BigDecimal.ZERO);
-        // Saldo do jogador deve permanecer intacto, pois ele perdeu
         assertThat(player.getBalance()).isEqualByComparingTo(new BigDecimal("1000.00"));
     }
 }

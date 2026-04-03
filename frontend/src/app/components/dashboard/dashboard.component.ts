@@ -24,6 +24,7 @@ import { PAYOUT_MULTIPLIERS } from '../../constants/bet.constants';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
+  // Injeção de serviços necessários
   private readonly fb = inject(FormBuilder);
   private readonly betService = inject(BetService);
   private readonly toastService = inject(ToastService);
@@ -32,9 +33,10 @@ export class DashboardComponent implements OnInit {
   private readonly animalService = inject(AnimalService);
   private readonly router = inject(Router);
   
-  // Usado para cancelar as inscrições (Observables) automaticamente quando o componente for destruído
+  // Gerenciador de destruição para limpar assinaturas de Observables
   private readonly destroyRef = inject(DestroyRef);
 
+  // Estados reativos (Signals) para dados da tela
   readonly animals = signal<Animal[]>([]);
   readonly wallet = signal<WalletStats>({
     balance: 0, totalWon: 0, totalLost: 0, totalPending: 0, netProfit: 0, pendingBetsCount: 0
@@ -43,13 +45,17 @@ export class DashboardComponent implements OnInit {
   readonly isLoading = signal<boolean>(false);
   readonly selectedAnimal = signal<Animal | null>(null);
   
+  // Cálculo em tempo real do prêmio potencial
   readonly potentialWinnings = signal<number>(0);
   
+  // Verifica se o usuário é administrador para mostrar o botão do painel
   readonly isAdmin = computed(() => this.authService.isAdmin());
 
+  // Definição do formulário e valores rápidos de aposta
   betForm!: FormGroup;
   readonly quickValues = [5, 10, 20, 50];
 
+  // Inicialização do componente
   ngOnInit(): void {
     this.loadUserProfile();
     this.loadWallet();
@@ -59,6 +65,7 @@ export class DashboardComponent implements OnInit {
     this.setupWinningsCalculator(); 
   }
 
+  // Carrega nome e dados básicos do perfil
   private loadUserProfile(): void {
     if (!this.authService.isLoggedIn()) return;
     
@@ -68,6 +75,7 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  // Carrega saldo e estatísticas da carteira
   private loadWallet(): void {
     if (!this.authService.isLoggedIn()) return;
     
@@ -77,6 +85,7 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  // Busca a lista de animais para o grid
   private loadAnimals(): void {
     this.animalService.getAnimals().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => this.animals.set(data),
@@ -84,12 +93,14 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  // Finaliza a sessão do usuário
   logout(): void {
     this.authService.logout(); 
     this.toastService.show('Sessão encerrada com sucesso!', 'success');
     this.router.navigate(['/']); 
   }
 
+  // Seleciona um animal no grid e preenche o formulário automaticamente
   selectAnimal(animal: Animal): void {
     this.selectedAnimal.set(animal);
     
@@ -100,6 +111,7 @@ export class DashboardComponent implements OnInit {
     this.toastService.show(`${animal.name} selecionado!`, 'success');
   }
 
+  // Inicializa o formulário com validações base
   private initForm(): void {
     this.betForm = this.fb.group({
       betType: ['GROUP', Validators.required],
@@ -109,6 +121,7 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  // Altera as validações do campo de valor conforme o tipo de aposta (Grupo, Dezena ou Milhar)
   private setupDynamicValidators(): void {
     this.betForm.get('betType')?.valueChanges.pipe(
       takeUntilDestroyed(this.destroyRef)
@@ -131,6 +144,7 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  // Calcula quanto o usuário pode ganhar baseado no valor digitado e multiplicadores
   private setupWinningsCalculator(): void {
     this.betForm.valueChanges.pipe(
       takeUntilDestroyed(this.destroyRef)
@@ -157,16 +171,19 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  // Define um valor de aposta através dos botões de atalho
   setQuickValue(amount: number): void {
     this.betForm.patchValue({ wagerAmount: amount });
   }
 
+  // Bloqueia caracteres inválidos em campos numéricos
   preventNegative(event: KeyboardEvent): void {
     if (event.key === '-' || event.key === 'e' || event.key === '+') {
       event.preventDefault();
     }
   }
 
+  // Envia a aposta para o servidor
   onSubmit(): void {
     if (this.betForm.invalid) {
       this.betForm.markAllAsTouched();
@@ -199,6 +216,7 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  // Retorna mensagens amigáveis de erro para as validações do formulário
   getErrorMessage(): string {
     const control = this.betForm.get('betValue');
     const type = this.betForm.get('betType')?.value;
@@ -230,7 +248,6 @@ export class DashboardComponent implements OnInit {
     const randomType = types[Math.floor(Math.random() * types.length)];
     const randomMode = modes[Math.floor(Math.random() * modes.length)];
     
-    // CORREÇÃO: Variável apenas declarada, sem atribuição inútil.
     let randomValue: string;
     
     if (randomType === 'GROUP') {
@@ -251,7 +268,7 @@ export class DashboardComponent implements OnInit {
     this.toastService.show('🎰 Jogada Aleatória Carregada!', 'success');
   }
 
-  /** Botão Azul: Carrega uma aposta "Favorita" (Exemplo hardcoded) */
+  /** Botão Azul: Carrega uma aposta fixa de exemplo */
   playFavoritesBet(): void {
     this.betForm.patchValue({
       betType: 'GROUP',
@@ -262,7 +279,7 @@ export class DashboardComponent implements OnInit {
     this.toastService.show('⭐ Seus Favoritos Carregados!', 'success');
   }
 
-  /** Botão Verde: Aposta Rápida em Grupo Cercado */
+  /** Botão Verde: Gera uma aposta rápida em Grupo no modo Cercado */
   quick5GroupBet(): void {
     this.betForm.patchValue({
       betType: 'GROUP',
@@ -273,7 +290,7 @@ export class DashboardComponent implements OnInit {
     this.toastService.show('🛡️ Grupo Cercado Gerado!', 'success');
   }
 
-  /** Botão Amarelo: Aposta rápida em uma Dezena Aleatória */
+  /** Botão Amarelo: Gera uma aposta rápida em uma Dezena aleatória */
   betOnTens(): void {
     this.betForm.patchValue({
       betType: 'TENS',
@@ -284,7 +301,7 @@ export class DashboardComponent implements OnInit {
     this.toastService.show('🎯 Dezena da Sorte Gerada!', 'success');
   }
 
-  /** Botão Roxo: Aposta no clássico número da sorte (0777) */
+  /** Botão Roxo: Carrega a milhar clássica "Lucky 7" */
   lucky7SeriesBet(): void {
     this.betForm.patchValue({
       betType: 'THOUSANDS',

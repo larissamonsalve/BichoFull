@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 /**
- * @description Estrutura de dados que representa um animal no jogo.
+ * Interface que define as propriedades de um animal no sistema
  */
 export interface Animal {
   name: string;
@@ -14,18 +14,19 @@ export interface Animal {
 }
 
 /**
- * @description Serviço responsável por comunicar com a API para obter os dados dos animais.
+ * Serviço responsável pelas requisições relacionadas aos animais
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root' // Torna o serviço disponível em toda a aplicação
 })
 export class AnimalService {
+  // Injeta o cliente HTTP para realizar as chamadas à API
   private readonly http = inject(HttpClient);
+  // Define a URL do endpoint buscando a base do arquivo de ambiente
   private readonly apiUrl = `${environment.apiUrl}/animals`;
 
   /**
-   * Obtém a lista completa de animais disponíveis para aposta.
-   * @returns Observable contendo um array de animais.
+   * Realiza uma requisição GET para buscar todos os animais cadastrados
    */
   getAnimals(): Observable<Animal[]> {
     return this.http.get<Animal[]>(this.apiUrl);

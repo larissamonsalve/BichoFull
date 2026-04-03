@@ -27,15 +27,16 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+// Define que é um teste de integração e utiliza o perfil de "test"
 @Tag("integration") 
 @SpringBootTest
 @ActiveProfiles("test")
-@Transactional
+@Transactional // Garante que o banco seja limpo após cada teste
 @AutoConfigureMockMvc
 class AuthControllerTest extends BaseIntegrationTest {
 
     @Autowired
-    private MockMvc mockMvc;
+    private MockMvc mockMvc; // Simula requisições HTTP
 
     @Autowired
     private UserRepository userRepository;
@@ -44,11 +45,12 @@ class AuthControllerTest extends BaseIntegrationTest {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    private ObjectMapper objectMapper; // Converte objetos para JSON
 
     @Test
     @DisplayName("Deve autenticar usuário e retornar token 200 OK")
     void deveFazerLoginComSucesso() throws Exception {
+        // Cria e salva um usuário de teste no banco
         User user = User.builder()
                 .name("Teste")
                 .username("testeuser")
@@ -61,6 +63,7 @@ class AuthControllerTest extends BaseIntegrationTest {
 
         LoginDTO loginDTO = new LoginDTO("testeuser", "senha123");
 
+        // Executa a requisição de login e verifica se o token JWT foi retornado
         mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(loginDTO)))
@@ -79,6 +82,7 @@ class AuthControllerTest extends BaseIntegrationTest {
                 "senha123"
         );
 
+        // Verifica se o registro retorna status 201 Created e a mensagem correta
         mockMvc.perform(post("/api/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto)))
@@ -93,10 +97,12 @@ class AuthControllerTest extends BaseIntegrationTest {
                 "Teste", "user1", "duplicado@email.com", "123456"
         );
         
+        // Registra o primeiro usuário
         mockMvc.perform(post("/api/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto)));
 
+        // Tenta registrar novamente e espera um erro 400 Bad Request
         mockMvc.perform(post("/api/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto)))
@@ -111,9 +117,10 @@ class AuthControllerTest extends BaseIntegrationTest {
                 "Teste Senha",
                 "user_senha",
                 "senha@email.com",
-                "12345" 
+                "12345" // Senha inválida (menor que 6)
         );
 
+        // Verifica se a validação do DTO bloqueia a requisição
         mockMvc.perform(post("/api/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto)))

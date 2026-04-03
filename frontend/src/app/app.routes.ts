@@ -7,19 +7,23 @@ import { DrawsComponent } from './components/draws/draws.component';
 import { AdminComponent } from './components/admin/admin.component';
 import { HistoryComponent } from './components/history/history.component';
 
-/**
- * @description Mapeamento central das rotas da aplicação (Routing).
- * Interliga os caminhos da URL aos respetivos Standalone Components.
- */
+import { authGuard } from './guards/auth.guard';
+import { adminGuard } from './guards/admin.guard';
+
 export const routes: Routes = [
+  // Rotas Públicas (Qualquer pessoa acede)
   { path: '', component: HomeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'dashboard', component: DashboardComponent },
-  { path: 'draws', component: DrawsComponent },
-  { path: 'admin', component: AdminComponent },
-  { path: 'history', component: HistoryComponent },
+
+  // Rotas Protegidas (Requerem Login)
+  { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard]},
+  { path: 'draws', component: DrawsComponent, canActivate: [authGuard] },
+  { path: 'history', component: HistoryComponent, canActivate: [authGuard]},
   
+  // Rota Ultra-Protegida (Requer Login E ser Admin)
+  { path: 'admin', component: AdminComponent, canActivate: [authGuard, adminGuard]},
+
   // Rota de fallback: Qualquer URL não mapeada redireciona para a Home.
   { path: '**', redirectTo: '' }
 ];

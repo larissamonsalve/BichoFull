@@ -1,0 +1,15 @@
+<div class="modal-overlay" (click)="onClose()" (keydown.escape)="onClose()"
+     role="button"
+     tabindex="0"
+     aria-label="Fechar modal">
+  <div class="modal-card" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()" role="dialog" 
+       aria-modal="true" tabindex="-1">
+    <div class="modal-header">
+      <h2 class="arcade-font" style="color: #a5b4fc;">{{ title() }}</h2>
+      <button class="btn-close-arcade" (click)="onClose()" aria-label="Fechar">×</button>
+    </div>
+    <div class="modal-body">
+      <div [innerHTML]="content()"></div>
+    </div>
+  </div>
+</div>

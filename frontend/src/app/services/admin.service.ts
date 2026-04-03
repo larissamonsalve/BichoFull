@@ -6,7 +6,7 @@ import { BetHistoryDTO } from './bet.service';
 import { environment } from '../../environments/environment';
 
 /**
- * @description DTO para o envio de um sorteio com resultados manipulados/customizados.
+ * Interface que define os dados necessários para enviar um sorteio manual.
  */
 export interface CustomDrawDTO {
   firstPrize: string;
@@ -17,33 +17,31 @@ export interface CustomDrawDTO {
 }
 
 /**
- * @description Serviço responsável pelas operações restritas de administração.
+ * Serviço que gerencia as chamadas de API para funções de administrador.
  */
 @Injectable({ providedIn: 'root' })
 export class AdminService {
+  // Injeta o cliente HTTP para realizar as requisições
   private readonly http = inject(HttpClient);
+  // Define a URL base para os endpoints administrativos
   private readonly apiUrl = `${environment.apiUrl}/admin`;
 
   /**
-   * Aciona a geração de um sorteio aleatório pelo motor RNG do Backend.
-   * @returns Observable com os dados do sorteio gerado.
+   * Solicita ao servidor a execução de um sorteio com números aleatórios.
    */
   triggerRandomDraw(): Observable<DrawDTO> {
     return this.http.post<DrawDTO>(`${this.apiUrl}/draws/random`, {});
   }
 
   /**
-   * Força o sistema a registrar um sorteio com valores customizados.
-   * @param dto Os prêmios definidos manualmente pelo administrador.
-   * @returns Observable com os dados do sorteio registrado.
+   * Envia números específicos para realizar um sorteio controlado/manual.
    */
   triggerCustomDraw(dto: CustomDrawDTO): Observable<DrawDTO> {
     return this.http.post<DrawDTO>(`${this.apiUrl}/draws/custom`, dto);
   }
 
   /**
-   * Busca todas as apostas já realizadas no sistema por todos os usuários.
-   * @returns Observable contendo o histórico global de apostas.
+   * Recupera do banco de dados a lista de todas as apostas feitas no sistema.
    */
   getAllSystemBets(): Observable<BetHistoryDTO[]> {
     return this.http.get<BetHistoryDTO[]>(`${this.apiUrl}/bets`);

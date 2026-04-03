@@ -3,12 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
+// Definição dos tipos de dados para tipos, modos e status de aposta
 export type BetType = 'GROUP' | 'TENS' | 'THOUSANDS';
 export type BetMode = 'SIMPLE' | 'SURROUNDED';
 export type BetStatus = 'PENDING' | 'WINNER' | 'LOSER';
 
 /**
- * @description DTO de requisição para criar uma nova aposta.
+ * Interface para os dados enviados ao criar uma aposta.
  */
 export interface BetRequestDTO {
   betType: BetType;
@@ -18,7 +19,7 @@ export interface BetRequestDTO {
 }
 
 /**
- * @description Interface representando o histórico de uma aposta individual.
+ * Interface para os dados de uma aposta recebidos do histórico.
  */
 export interface BetHistoryDTO {
   id: number;
@@ -34,7 +35,7 @@ export interface BetHistoryDTO {
 }
 
 /**
- * @description Resposta paginada padrão do Spring Boot.
+ * Interface para formatar a resposta paginada do servidor.
  */
 export interface PaginatedResponse<T> {
   content: T[];
@@ -45,7 +46,7 @@ export interface PaginatedResponse<T> {
 }
 
 /**
- * @description Resumo estatístico das apostas do utilizador.
+ * Interface para o resumo de estatísticas do usuário.
  */
 export interface BetHistorySummary {
   totalBets: number;
@@ -55,19 +56,18 @@ export interface BetHistorySummary {
 }
 
 /**
- * @description Serviço responsável pelas operações relacionadas às apostas.
+ * Serviço que gerencia as requisições de apostas para a API.
  */
 @Injectable({
   providedIn: 'root'
 })
 export class BetService {
+  // Injeção do cliente HTTP e definição da URL base
   private readonly http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiUrl}/bets`;
 
   /**
-   * Registra uma nova aposta no servidor.
-   * @param betRequest O objeto contendo os dados da aposta.
-   * @returns Um Observable com a mensagem de sucesso.
+   * Envia uma nova aposta para o servidor.
    */
   placeBet(betRequest: BetRequestDTO): Observable<string> {
     return this.http.post(`${this.apiUrl}`, betRequest, { 
@@ -76,20 +76,14 @@ export class BetService {
   }
 
   /**
-   * Busca o histórico de apostas do utilizador autenticado usando paginação.
-   * CORREÇÃO: Removidas as anotações ': number' dos parâmetros,
-   * permitindo que o TypeScript deduza os tipos automaticamente pelo '0' e '10'.
-   * @param page O número da página (começa em 0).
-   * @param size Quantidade de itens por página.
-   * @returns Observable contendo os dados paginados.
+   * Busca o histórico de apostas do usuário logado de forma paginada.
    */
   getHistory(page = 0, size = 10): Observable<PaginatedResponse<BetHistoryDTO>> {
     return this.http.get<PaginatedResponse<BetHistoryDTO>>(`${this.apiUrl}/history?page=${page}&size=${size}`);
   }
 
   /**
-   * Busca as estatísticas (resumo) das apostas do utilizador autenticado.
-   * @returns Observable contendo o resumo consolidado.
+   * Busca o resumo estatístico (ganhos, perdas, total) do usuário.
    */
   getHistorySummary(): Observable<BetHistorySummary> {
     return this.http.get<BetHistorySummary>(`${this.apiUrl}/history/summary`);
