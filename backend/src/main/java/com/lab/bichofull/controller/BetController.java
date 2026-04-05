@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 /**
  * Controller responsável pelas operações relacionadas às apostas dos usuários.
  */
-@CrossOrigin(origins = "http://localhost:4200") // Permite o acesso do frontend Angular
+//@CrossOrigin(origins = "http://localhost:4200") // Permite o acesso do frontend Angular
 @RestController
 @RequestMapping("/api/bets") // Define a rota base para apostas
 @RequiredArgsConstructor // Injeta dependências automaticamente via construtor

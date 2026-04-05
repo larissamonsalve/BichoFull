@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 // Permite requisições do frontend Angular
-@CrossOrigin(origins = "http://localhost:4200")
+//@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/api/draws") // Define a rota base para sorteios
 @RequiredArgsConstructor // Injeta dependências via construtor
