@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 /**
  * Controller responsável pela autenticação e registro de usuários.
  */
-@CrossOrigin(origins = "http://localhost:4200") // Permite requisições do frontend Angular
+//@CrossOrigin(origins = "http://localhost:4200") // Permite requisições do frontend Angular
 @RestController
 @RequestMapping("/api/auth") // Define o prefixo das rotas de autenticação
 @RequiredArgsConstructor // Injeta automaticamente as dependências via construtor

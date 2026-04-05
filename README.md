@@ -1,7 +1,7 @@
 # 🕹️ BichoFull - Simulador Arcade de Jogo do Bicho
 ---
 
-O **BichoFull** é uma plataforma que simula a mecânica do tradicional Jogo do Bicho brasileiro utilizando um sistema de **fichas virtuais**. O projeto foi desenvolvido seguindo padrões de engenharia de software, em Spring Boot e Angular, usando docker e flyway, Lint, e documentação JsDocs e Swagger com uma interface  totalmente responsiva e temática inspirada em máquinas de fliperama (Arcade/Retro).
+O **BichoFull** é um ecossistema digital que simula a mecânica do tradicional Jogo do Bicho brasileiro através de um sistema exclusivo de fichas virtuais. O projeto utiliza uma arquitetura com Spring Boot no backend e Angular no frontend. A infraestrutura é totalmente containerizada com Docker, contando com versionamento de banco de dados via Flyway, documentação técnica automatizada com Swagger e uso de boas práticas com o ESLint e Prettier. A plataforma oferece uma experiência de usuário imersiva, com interface totalmente responsiva e estética retrô inspirada em máquinas de arcade.
 
 ---
 
@@ -66,10 +66,6 @@ O sistema foi construído sobre uma **Arquitetura em Camadas (Layered Architectu
 
 API documentada utilizando o padrão **OpenAPI 3 (Swagger)**. Nela, é possível visualizar todos os endpoints, os modelos de dados (DTOs) e testar as requisições diretamente pelo navegador.
 
-* **URL da Documentação:** [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
-
-> **Instrução para Teste:** Para endpoints protegidos (como apostas), você deve primeiro realizar o login, copiar o `token` gerado e clicar no botão **Authorize** no topo da página do Swagger, inserindo o valor: `Bearer SEU_TOKEN_GERADO_AQUI`.
-
 ### **Arquitetura de Contêineres (Docker)**
 
 O sistema é totalmente orquestrado via Docker Compose, permitindo subir a infraestrutura completa com um único comando:
@@ -90,9 +86,9 @@ O sistema é totalmente orquestrado via Docker Compose, permitindo subir a infra
 
 *  **Grupo**: Acerte o grupo do animal (1-25) |**18x** |
 
-| **Dezena** | Acerte os 2 últimos dígitos do prêmio | **60x** |
+*  **Dezena** | Acerte os 2 últimos dígitos do prêmio | **60x** |
 
-| **Milhar** | Acerte os 4 dígitos exatos do prêmio | **4000x** |
+*  **Milhar** | Acerte os 4 dígitos exatos do prêmio | **4000x** |
 
 ### **Modos de Jogo**
 
@@ -102,7 +98,7 @@ O sistema é totalmente orquestrado via Docker Compose, permitindo subir a infra
 
 ---
 
-# ⚡ Principais Funcionalidades
+## ⚡ Principais Funcionalidades
 
 ---
 
@@ -207,6 +203,8 @@ Assim que os logs indicarem que o Spring Boot foi iniciado, abra seu navegador e
 * **Aplicação**: http://localhost
 
 * **Documentação da API (Swagger)**: http://localhost:8080/swagger-ui/index.html
+
+> **Instrução para Teste de API:** Para endpoints protegidos (como apostas), você deve primeiro realizar o login, copiar o `token` gerado e clicar no botão **Authorize** no topo da página do Swagger, inserindo o valor: `Bearer SEU_TOKEN_GERADO_AQUI`.
 
 ### **4. Comandos Úteis**
 
