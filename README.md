@@ -184,25 +184,25 @@ Certifique-se de que a porta 80 (Frontend), 8080 (Backend) e 3306 (MySQL) não e
 ### **2. Execução**
 
 **1. Clone o repositório:**
-\`\`\`bash
+```bash
 git clone https://github.com/larissamonsalve/BichoFull.git
 cd BichoFull
-\`\`\`
+```
 
 **2. Configure as variáveis de ambiente:**
 * Crie um arquivo chamado `.env` na raiz do projeto.
 * Copie o conteúdo do arquivo `.env.example` e cole dentro do seu novo `.env`.
 
 **3. Ajuste a URL da API (Frontend):**
-Para que o Frontend se conecte ao seu servidor local (e não à minha AWS), abra o arquivo \`frontend/src/environments/environment.ts\` e altere a `apiUrl`:
+Para que o Frontend se conecte ao seu servidor local (e não à minha AWS), abra o arquivo `frontend/src/environments/environment.ts` e altere a `apiUrl`:
 * De: `apiUrl: 'http://3.134.102.174:8080/api'`
 * Para: `apiUrl: 'http://localhost:8080/api'`
 
 **4. Suba os containers com Docker:**
 Execute o comando abaixo na raiz do projeto:
-\`\`\`bash
+```bash
 docker compose up -d --build
-\`\`\`
+```
 
 ### **3. Acesse o sistema**
 
