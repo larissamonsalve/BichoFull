@@ -3,5 +3,6 @@
  */
 export const environment = {
   production: true,
-  apiUrl: 'http://3.134.102.174:8080'
+  apiUrl: 'http://3.134.102.174:8080/api'
+  //apiUrl: 'http://localhost:8080/api'
 };
