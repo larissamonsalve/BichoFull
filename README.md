@@ -1,7 +1,9 @@
 # 🕹️ BichoFull - Simulador Arcade de Jogo do Bicho
 ---
 
-O **BichoFull** é um ecossistema digital que simula a mecânica do tradicional Jogo do Bicho brasileiro através de um sistema exclusivo de fichas virtuais. O projeto utiliza uma arquitetura com Spring Boot no backend e Angular no frontend. A infraestrutura é totalmente containerizada com Docker, contando com versionamento de banco de dados via Flyway, documentação técnica automatizada com Swagger e uso de boas práticas com o ESLint e Prettier. A plataforma oferece uma experiência de usuário imersiva, com interface totalmente responsiva e estética retrô inspirada em máquinas de arcade.
+**Status:** Em produção na AWS! Acesse: [http://3.134.102.174](http://3.134.102.174)
+
+O **BichoFull** é um ecossistema digital que simula a mecânica do tradicional Jogo do Bicho brasileiro através de um sistema de fichas virtuais. O projeto utiliza uma arquitetura com Spring Boot no backend e Angular no frontend. A infraestrutura é totalmente containerizada com Docker, contando com versionamento de banco de dados via Flyway, documentação técnica automatizada com Swagger e uso de boas práticas com o ESLint e Prettier. A plataforma oferece uma experiência de usuário imersiva, com interface totalmente responsiva e estética retrô inspirada em máquinas de arcade.
 
 ---
 
@@ -181,26 +183,35 @@ Certifique-se de que a porta 80 (Frontend), 8080 (Backend) e 3306 (MySQL) não e
 
 ### **2. Execução**
 
-Na raiz do projeto (onde está o arquivo docker-compose.yml), execute o comando abaixo:
+**1. Clone o repositório:**
+\`\`\`bash
+git clone https://github.com/larissamonsalve/BichoFull.git
+cd BichoFull
+\`\`\`
 
-  ```bash
-  docker-compose  up --build
-  ```
-O que este comando faz:
+**2. Configure as variáveis de ambiente:**
+* Crie um arquivo chamado `.env` na raiz do projeto.
+* Copie o conteúdo do arquivo `.env.example` e cole dentro do seu novo `.env`.
 
-* **Build do Backend**: Compila o código Java 21 via Maven e gera a imagem JRE.
+**3. Ajuste a URL da API (Frontend):**
+Para que o Frontend se conecte ao seu servidor local (e não à minha AWS), abra o arquivo \`frontend/src/environments/environment.ts\` e altere a `apiUrl`:
+* De: `apiUrl: 'http://3.134.102.174:8080/api'`
+* Para: `apiUrl: 'http://localhost:8080/api'`
 
-* **Build do Frontend**: Instala dependências do Node, compila o Angular 17 e configura o Nginx.
+**4. Suba os containers com Docker:**
+Execute o comando abaixo na raiz do projeto:
+\`\`\`bash
+docker compose up -d --build
+\`\`\`
 
-* **Migrações de Banco**: O Flyway detecta o banco de dados e executa automaticamente os scripts SQL (V1 a V5) para criar as tabelas e dados iniciais.
+### **3. Acesse o sistema**
 
-* **Proxy Reverso**: O Nginx inicia e começa a encaminhar chamadas de /api para o container do Spring Boot de forma transparente.
+Assim que os logs indicarem que tudo foi iniciado, abra seu navegador em:
 
-### **3. Acessando o sistema**
+* **Frontend**: http://localhost
 
-Assim que os logs indicarem que o Spring Boot foi iniciado, abra seu navegador em:
-
-* **Aplicação**: http://localhost
+> **Observação:** O banco de dados subirá vazio. Após criar o seu primeiro usuário, você pode promovê-lo a Administrador acessando o banco via terminal:
+\`UPDATE users SET role = 'ADMIN' WHERE username = 'seu_usuario';\`
 
 * **Documentação da API (Swagger)**: http://localhost:8080/swagger-ui/index.html
 
@@ -213,7 +224,6 @@ Assim que os logs indicarem que o Spring Boot foi iniciado, abra seu navegador e
 * **Parar a aplicação**: docker-compose down
 
 * **Ver logs de erro**: docker-compose logs -f
-
 
 ### 📝 Licença
 Este projeto está sob a licença MIT. Consulte o arquivo [LICENSE](LICENSE) para mais detalhes.
