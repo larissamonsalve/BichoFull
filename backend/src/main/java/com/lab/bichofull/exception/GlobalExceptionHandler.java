@@ -34,6 +34,7 @@ public class GlobalExceptionHandler {
     // 3. Fallback genérico para erros técnicos não previstos (Substitui o try-catch de erro 500)
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGenericException(Exception ex) {
+        //ex.printStackTrace();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Ocorreu um erro interno no servidor. Tente novamente mais tarde.");
     }
